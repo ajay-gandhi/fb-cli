@@ -1,9 +1,8 @@
-var fb = require('./yoface.js');
 var keypress = require('keypress');
 var open = require('open')
 var inquirer = require("inquirer");
 var chalk = require('chalk');
-
+var fb;
 // listen for the "keypress" event
 
 var lastitem = null;
@@ -72,6 +71,7 @@ var manage_keys = function (ch, key) {
       commentMessage = answer.comment;
     });
     fb.comment(lastitem.id, commentMessage);
+    return
   }
 
   // Like.
@@ -203,6 +203,8 @@ function print_newsfeed_item (news) {
  */
 function init () {
 
+    fb = require('./yoface.js');
+
     // Log first newsfeed thingy.
     fb.nextNews()
         .then(print_newsfeed_item)
@@ -222,5 +224,13 @@ function init () {
 
 }
 
+var config = require('./config');
 
-init();
+if (!config.accessToken) {
+  console.log('Looks like you have to login.')
+  var hack = require('./server');
+  hack.showLogin()
+    .then(init)
+    .catch(console.trace)
+}
+
