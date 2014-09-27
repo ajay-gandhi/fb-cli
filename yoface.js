@@ -104,43 +104,6 @@ module.exports = (function () {
 		)
 	};
 
-
-	// YoFace.prototype.next_news = function () {
-	// 	var self = this;
-
-	// 	return new Promise(function (resolve, reject) {
-	// 		var news = self.cache.news.shift();
-
-	// 		if (false) {
-	// 			var url = "http://graph.facebook.com/"+news.id+"/picture"
-
-	// 			utils.delete('cache.jpeg', function (err) {
-	// 				if (err) {
-	// 					console.error(err);
-	// 					resolve(news)
-	// 				}
-
-	// 				utils.download(url, 'cache.jpeg', function(){
-
-	// 				  var pic = new Ascii('cache.jpeg');
-	// 				  pic.convert(function(err, result) {
-	// 				    if (err) console.trace(err);
-
-	// 				    news.ascii_img = result;
-	// 				    console.log(news)
-	// 				    resolve(news);
-
-	// 				  });
-	// 				});
-	// 			});
-
-	// 		} else { resolve(news) }
-	// 	});
-
-	//}
-
-	
-
 	return new YoFace(fb);
 
 })();
