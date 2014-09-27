@@ -1,5 +1,4 @@
 var Promise = require('es6-promise').Promise;
-var utils = require('./utils');
 var Facebook = require('facebook-node-sdk');
 
 
@@ -10,7 +9,7 @@ module.exports = (function () {
 	var config = {
 		appID: '698243363597060', 
 		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
-		token: 'CAACEdEose0cBABHYxbxbAsffYO7GlnrPOzXt91XiZAExghpZAKny6pGudfKBWxRKeHF4XTdUQBDZBdWwqmoO7KllznUZA7RNicbZCqohyMxqPTCohY7aPRpolIZAhVM9fXxgWfKISSV8gLwDwgLPnHMhkavLImEv0rtVgohN7mXJ4vYGZAz1zc5ThiiFmeDZC3DotvQC3Vnmc0VTj2KFzTc2DeAv5EjvEYUZD',
+		token: 'CAAJ7DHOnawQBAE57XZBQIKP5zk3oU8Kzng8DRv0YtKZBOJLAvZBUOScEIEZCWCqKSbCeU3VztztiWsRn21wpl4j2oaMWwBF1HDZAA2ZBHsFzD5Psb6bfA9EC3dNTtOtHD2D8XKEeq2NXCZALqMdKmjvuTLoKVq2tq4hoHjVJAuMIvEQEGtiVRiAgzt1tQ3bjDiEGAVKHUtZBaTo1W3xrmKtIHaYX0MwfwDUZD',
 	}
 
 
@@ -47,6 +46,9 @@ module.exports = (function () {
 			freinds : []
 		}
 	}
+
+	// Make config info public
+	YoFace.prototype.config = config;
 
 	/**
 	 * Returns a promise for the next news feed element in the users' newsfeed.
@@ -124,6 +126,23 @@ module.exports = (function () {
 
 		)
 	};
+
+	YoFace.prototype.comment = function(postId, message) {
+		var url = "/" + postId + "comments";
+
+		FB.api(
+			url,
+			"POST",
+			{
+				"message": message
+			},
+			function (response) {
+				if (response && !response.error) {
+					console.log(response);
+				}
+			}
+		);
+	}
 
 	return new YoFace(fb);
 

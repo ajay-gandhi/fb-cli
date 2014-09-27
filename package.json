@@ -23,7 +23,6 @@
   "homepage": "https://github.com/ajay-gandhi/fb-cli",
   "dependencies": {
     "args": "0.0.3",
-    "ascii": "^0.1.0",
     "chalk": "^0.5.1",
     "es6-promise": "^1.0.0",
     "facebook-node-sdk": "^0.2.0",
