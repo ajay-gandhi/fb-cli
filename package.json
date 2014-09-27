@@ -26,7 +26,9 @@
     "ascii": "^0.1.0",
     "chalk": "^0.5.1",
     "es6-promise": "^1.0.0",
+    "facebook-node-sdk": "^0.2.0",
     "inquirer": "^0.8.0",
+    "keypress": "^0.2.1",
     "keypress-prompt": "^0.3.2",
     "open": "0.0.5",
     "request": "^2.44.0"

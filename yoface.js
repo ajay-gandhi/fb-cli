@@ -1,6 +1,5 @@
 var Promise = require('es6-promise').Promise;
 var utils = require('./utils');
-var Ascii = require('ascii');
 var Facebook = require('facebook-node-sdk');
 
 
@@ -11,7 +10,7 @@ module.exports = (function () {
 	var config = {
 		appID: '698243363597060', 
 		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
-		token: 'CAACEdEose0cBAPOrmltEp9MfunPOORs7yzKNUOBbGTEfy0zJvZBKLsfSU20XiTV6dyFDJ64580A3tFH6f54m957BWDaF0ZCtUt80MV4dDrVvWtDCRe9eA7YIJnQ8nWmTL6082H4nFWIvZAmBWiP3pwRu0OGn1W3ZBCcrJa1z9ZCftmx637lRwWBAysn9ule9BzeUeR15PtB1TnLCMXqzV',
+		token: 'CAACEdEose0cBAPSdu2PZC3lchZCoX8KGOZBRzDcAVvCAwhe50rgq6cpmZB6cjx8ZAOvZAkGuv2lV1xCttsZAgYN6QD4XcFUliGv5tLDudckYrhOsTcfqJXj8oLkaCZBzqwA4C5ZCC1zxMRsab501VUV6KEtIkA63I3Qym2vZCANJqUWYJy5ZC401QrHiot2Lja9flSxjDP7ljklteeWJ9ZBr90ZB6',
 	}
 
 
@@ -29,7 +28,7 @@ module.exports = (function () {
 
 	}
 
-	var fb = new ActualFacebook(config);
+	var FB = new ActualFacebook(config);
 
 	//////////////////
 	///
@@ -42,7 +41,7 @@ module.exports = (function () {
 	 * @param {[type]} fb [description]
 	 */
 	function YoFace (fb) {
-		this.fb = fb;
+		this.FB = fb;
 		this.cache = {
 			news : []
 		}
@@ -59,7 +58,7 @@ module.exports = (function () {
 			
 			if (self.cache.news.length === 0) {				
 				// >> Add support for newsfeed pagination
-				fb.api('/me/home', function(err, res) {
+				FB.api('/me/home', function(err, res) {
 					if (err) reject(err);
 				  	//console.log(res);
 				  	self.cache.news = res.data;
@@ -74,11 +73,11 @@ module.exports = (function () {
 	};
 
 	YoFace.prototype.post = function(message) {
-		fb.api(
+		FB.api(
 		    "/me/feed",
 		    "POST",
 		    {
-		        "message": "IF THIS WORKS IM GONNA JUMP."
+		        "message": message
 		    },
 		    function (response) {
 		      if (response && !response.error) {
@@ -91,55 +90,19 @@ module.exports = (function () {
 
 	YoFace.prototype.like = function(postId) {
 		var url = "/" + postId+"/likes"
+
 		FB.api(
 			url,
 			"POST",
 			function(response){
 				if (response && !response.error) {
-					
+					console.log(response)
       			}	
 			}
 
 
 		)
 	};
-
-
-	// YoFace.prototype.next_news = function () {
-	// 	var self = this;
-
-	// 	return new Promise(function (resolve, reject) {
-	// 		var news = self.cache.news.shift();
-
-	// 		if (false) {
-	// 			var url = "http://graph.facebook.com/"+news.id+"/picture"
-
-	// 			utils.delete('cache.jpeg', function (err) {
-	// 				if (err) {
-	// 					console.error(err);
-	// 					resolve(news)
-	// 				}
-
-	// 				utils.download(url, 'cache.jpeg', function(){
-
-	// 				  var pic = new Ascii('cache.jpeg');
-	// 				  pic.convert(function(err, result) {
-	// 				    if (err) console.trace(err);
-
-	// 				    news.ascii_img = result;
-	// 				    console.log(news)
-	// 				    resolve(news);
-
-	// 				  });
-	// 				});
-	// 			});
-
-	// 		} else { resolve(news) }
-	// 	});
-
-	//}
-
-	
 
 	return new YoFace(fb);
 

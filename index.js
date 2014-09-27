@@ -35,8 +35,9 @@ var manage_keys = function (ch, key) {
     return
   }
 
-  // Likes
+  // Like.
   if (key && lastitem && key.name == 'l') {
+<<<<<<< HEAD
     console.log('gotta like', lastitem.id ,'!')
     fb.like(lastitem.id);
 
@@ -46,15 +47,20 @@ var manage_keys = function (ch, key) {
   // View likes
   if (key && lastitem && key.name == 'v') {
     console.log('gotta show likes for', lastitem.id ,'.')
+=======
+    fb.like(lastitem.id);
+>>>>>>> 27f19ef5b056c2e198f55aa13be0122e1e661a9a
     return
   }
 
+  // Open on the browser
   if (key && lastitem && key.name == 'o') {
     console.log('gotta open', lastitem.id ,'in browser')
     open(lastitem.link);
     return
   }
 
+  // Post
   if (key && key.name == 'p') {
   	process.stdin.setRawMode(false); text = true;
 
@@ -97,7 +103,7 @@ function print_newsfeed_item (news) {
 
 	console.log(news.from.name + ":\n")
 
-	if (news.story) console.log(news.story + ":\n");
+	if (news.story) console.log(news.story + "\n");
 	if (news.message) console.log(news.message + "\n");
 	if (news.type === "link") console.log(news.link + "\n")
 
@@ -105,7 +111,7 @@ function print_newsfeed_item (news) {
 	// Build that likes message 
 	var others_msg = ""
 	if (news.likes) {
-		var others_msg = "(v) " + news.likes.data.length + ' ';
+		var others_msg = "" + news.likes.data.length + ' ';
 		if (news.likes.paging.next) others_msg = others_msg + "+ "
 		others_msg = others_msg + "likes.  "
 	}
@@ -124,6 +130,7 @@ function print_newsfeed_item (news) {
 	// Build the action bar at the bottom.
 	var action_bar = ""
 	if (news.link) action_bar = action_bar + "(o) open " 
+  if (news.like) action_bar = action_bar + "(o) open " 
 
 	action_bar = action_bar + "(p) post " 
 	console.log(action_bar);
