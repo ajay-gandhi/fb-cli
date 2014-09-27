@@ -6,11 +6,8 @@ module.exports = (function () {
 
 	////////////////
 
-	var config = {
-		appID: '698243363597060', 
-		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
-		token: 'CAAJ7DHOnawQBAE57XZBQIKP5zk3oU8Kzng8DRv0YtKZBOJLAvZBUOScEIEZCWCqKSbCeU3VztztiWsRn21wpl4j2oaMWwBF1HDZAA2ZBHsFzD5Psb6bfA9EC3dNTtOtHD2D8XKEeq2NXCZALqMdKmjvuTLoKVq2tq4hoHjVJAuMIvEQEGtiVRiAgzt1tQ3bjDiEGAVKHUtZBaTo1W3xrmKtIHaYX0MwfwDUZD',
-	}
+	var config = require('./config')
+	var authInfo = require('./authInfo')
 
 
 	function ActualFacebook (config) {
@@ -23,7 +20,7 @@ module.exports = (function () {
 		  }).setAccessToken(token);
 		};
 
-		return fb = createFB(config.appID, config.secret, config.token)
+		return fb = createFB(config.appID, config.secret, authInfo.accessToken)
 
 	}
 

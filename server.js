@@ -1,3 +1,4 @@
+
 // var express = require('express');
 // var app = express();
 
@@ -12,47 +13,44 @@
 //     console.log('Listening on port %d', server.address().port);
 // });
 
+'use strict';
 
 var http = require('http'),
     fs = require('fs-extra'),
-    path = require('path'),
     url = require('url'),
     Promise = require('es6-promise').Promise;
 
 module.exports = (function () {
 	
-	function WebHack () {
-		this.server = http.createServer(function(req, res) {
-			var url_parts = url.parse(req.url, true);
-			var query = url_parts.query;
-
-			console.log(query);
-
-			if (Object.keys(query).length === 0) {
-				var fileStream = fs.createReadStream('./do/login.html');
-				fileStream.pipe(res);
-			} else {
-				handleInfo(query)
-				this.server.close();
-			}
-
-		}).listen(3000);
-	}
-
+	function WebHack () {}
 
 	WebHack.prototype.showLogin = function() {
-		require('open')('localhost:3000');
-	};
-
-
-	var handleInfo = function (info) {
+		var self = this;
 		return new Promise(function (resolve, reject) {
-			outputFile('authInfo.json', JSON.stringify(info), function(err) {
-				if (err) reject(err)
-				resolve(info)
-			}
+			var server = http.createServer(function(req, res) {
+				
+				var url_parts = url.parse(req.url, true);
+				var query = url_parts.query;
+
+				console.log(query);
+
+				if (Object.keys(query).length === 0) {
+					var fileStream = fs.createReadStream('./do/login.html');
+					fileStream.pipe(res);
+				} else {
+					server.close();
+					fs.outputFile('authInfo.json', JSON.stringify(query), function(err) {
+						if (err) {reject(err);}
+						resolve(query);
+					});
+				}
+
+			}).listen(3000);
+			
+
+			require('open')('http://localhost:3000/');
 		});
-	}
+	};
 
 	return new WebHack();
 
