@@ -89,7 +89,7 @@ module.exports = (function () {
 	};
 
 
-	YoFace.prototype.like = function(postID) {
+	YoFace.prototype.like = function(postId) {
 		var url = "/" + postId+"/likes"
 		FB.api(
 			url,

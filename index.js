@@ -38,6 +38,8 @@ var manage_keys = function (ch, key) {
   // Likes
   if (key && lastitem && key.name == 'l') {
     console.log('gotta like', lastitem.id ,'!')
+    fb.like(lastitem.id);
+
     return
   }
 

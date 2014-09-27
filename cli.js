@@ -11,7 +11,7 @@ var script_name = "./cli.js";
 var args = process.argv.slice(2);
 
 // List of valid commands
-var commands = ["help", "newsfeed", "post", "poke"];
+var commands = ["help", "newsfeed", "post", "poke","like"];
 
 // Parse arguments
 if (args.length >= 1) {
@@ -44,7 +44,12 @@ if (args.length >= 1) {
   } else if (cmd == "poke") {
     if (args[1] != undefined) {
       var pokee = args[1];
-    } else {
+    } 
+
+    else if(cmd=="like"){
+      
+    }
+    else {
       console.log("Invalid argument. `" + script_name + " post` takes an argument.");
     }
   }
