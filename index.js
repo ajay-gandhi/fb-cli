@@ -3,7 +3,6 @@ var keypress = require('keypress');
 var open = require('open')
 
 
-
 // make `process.stdin` begin emitting "keypress" events
 keypress(process.stdin);
 

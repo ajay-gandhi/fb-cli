@@ -27,6 +27,8 @@
     "es6-promise": "^1.0.0",
     "inquirer": "^0.8.0",
     "open": "0.0.5",
-    "request": "^2.44.0"
+    "request": "^2.44.0",
+    "chalk": "^0.5.1",
+    "inquirer": "^0.8.0"
   }
 }
