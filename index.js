@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 'use strict';
 var keypress = require('keypress'),
     inquirer = require('inquirer'),
@@ -5,6 +6,37 @@ var keypress = require('keypress'),
     spawn = require('child_process').spawn,
     Promise = require('es6-promise').Promise,
     open = require('open');
+    
+
+var appname = 
+"    ___     _        __      _  \n"+
+"   / __\\_ _| | __ _ / _| ___| | \n"+
+"  / _\\/ _` | |/ _` | |_ / _ \\ | \n"+
+" / / | (_| | | (_| |  _|  __/ | \n"+
+" \\/   \\__,_|_|\\__,_|_|  \\___|_| \n"+
+"                  " + chalk.blue("for facebook\n")
+
+var nyan = 
+"+      o     +              o     \n"+
+"    +             o     +       + \n"+
+"o          +                      \n"+
+"    o  +           +        +     \n"+
+"+        o     o       +        o \n"+
+"-_-_-_-_-_-_-_,------,      o     \n"+
+"_-_-_-_-_-_-_-|   /\\_/\\           \n"+
+"-_-_-_-_-_-_-~|__( ^ .^)  +     + \n"+
+"_-_-_-_-_-_-_-\"\"  \"\"              \n"+
+"+      o         o   +       o    \n"+
+"    +         +                   \n"+
+"o        o         o      o     + \n"+
+"    o           +                 \n"+
+"+      +     o        o bye  +    \n"
+
+function clear () {
+    process.stdout.write ('\u001B[2J\u001B[0;0f');
+}
+
+
 
 var fb;
 // listen for the "keypress" event
@@ -32,6 +64,7 @@ function getTermSize(cb){
 }
 var cols, lines;
 getTermSize(function(c, l) {
+  console.log
   cols = c;
   lines = l;
 });
@@ -48,16 +81,17 @@ var manage_keys = function (ch, key) {
 	if (text) return;
 
   
+  // Next news feed item.
   if (key && key.name == 'space') {
-	fb.nextNews()
-		.then(print_newsfeed_item)
-		.catch(console.error);
-	return;
+	 fb.nextNews()
+	 	.then(print_newsfeed_item)
+	 	.catch(console.error);
+	 return;
   }
-
 
   // Quit.
   if (key && key.ctrl && key.name == 'c') {
+    console.log(nyan);
     process.stdin.pause();
     return;
   }
@@ -68,13 +102,9 @@ var manage_keys = function (ch, key) {
     return;
   }
 
-  // Command mode.
-  if (key && key.ctrl && key.name == 'escape') {
-    return;
-  }
-
   // Comment.
   if (key && lastitem && key.name == 'c') {
+    textmode(true)
     var askComment = [{
       type: 'input',
       name: 'comment',
@@ -82,9 +112,9 @@ var manage_keys = function (ch, key) {
     }];
     var commentMessage;
     inquirer.prompt(askComment, function(answer) {
-      commentMessage = answer.comment;
+      fb.comment(lastitem.id, answer.comment);
+      textmode(false)
     });
-    fb.comment(lastitem.id, commentMessage);
     return;
   }
 
@@ -100,14 +130,13 @@ var manage_keys = function (ch, key) {
 
   // Open on the browser
   if (key && lastitem && key.name == 'o') {
-    console.log('gotta open', lastitem.id ,'in browser');
     open(lastitem.link);
     return;
   }
 
   // Post
   if (key && key.name == 'p') {
-  	process.stdin.setRawMode(false); text = true;
+  	textmode(true)
 
   	var question = {
   		type : 'input',
@@ -116,24 +145,63 @@ var manage_keys = function (ch, key) {
   	};
 
   	inquirer.prompt([question], function( answers ) {
-  		console.log('Posted', answers.post + '!');
+  		console.log('Posted "', answers.post + '".');
       fb.post(answers.post);
-  		
-      text = false;
-  		process.stdin.setRawMode(true);
-  		process.stdin.resume();
+      textmode(false)
   	});
     return;
   }
 
-  console.log('got:keypress', key);
+  // Help
+  if (key && key.name == 'h') {
+    console.log('(space) next post.');
+    console.log('(esc)   command mode. \'help\' in command mode for command mode help.')
+    console.log(' p      new status update.')
+    return;
+  }
+
+  // Command mode.
+  if (key && key.name == 'escape') {
+    textmode(true)
+    var q = { name: 'cmd', message: ':' };
+    inquirer.prompt([q], function(a) {
+      
+
+      // Return to top of newsfeed
+      if (a.cmd === 'top') {
+        fb.cache.news = []
+        fb.cache.news_next = null;
+        clear();
+        fb.nextNews()
+          .then(print_newsfeed_item)
+          .catch(console.error);
+
+      }
+
+      if (a.cmd === 'help') {
+        console.log('top:    return to top of newsfeed.');
+        console.log('help:   display this message.');
+      }
+
+      textmode(false);
+    });
+    return;
+  }
+
+  //console.log('got:keypress', key);
 };
 
-var inputMode = function (input) {
-  if (input) {
+/**
+ * Enables textmode, so we can input strings of characters.
+ * @param  {[type]} tm [description]
+ * @return {[type]}    [description]
+ */
+var textmode = function (tm) {
+  if (tm) {
     process.stdin.setRawMode(false); text = true;
   } else {
-    process.stdin.setRawMode(true); text = false;
+    process.stdin.setRawMode(true); text = false; process.stdin.resume();
+
   }
 }
 
@@ -143,9 +211,11 @@ var inputMode = function (input) {
  * @param  {Newsfeeed item} news
  */
 function print_newsfeed_item (news) {
+  var size = require('window-size');
+
   var separator = '';
-  for (var i = 0; i < cols; i++) {
-    separator += '-';
+  for (var i = 0; i < size.width; i++) {
+    separator += '─';
   }
 	console.log(chalk.cyan(separator));
 	//nice sugar
@@ -200,12 +270,18 @@ function print_newsfeed_item (news) {
 
 	// Build the action bar at the bottom.
 	var action_bar = '';
-	if (news.link)     action_bar = action_bar + '(o) open ' ;
-  if (news.likes)    action_bar = action_bar + '(l) like ' ;
-  if (news.comments) action_bar = action_bar + '(c) comment ';
-                     action_bar = action_bar + '(p) post ';
-	
+	if (news.link)     action_bar = action_bar + fmta ('o', 'open') ;
+  if (news.likes)    action_bar = action_bar + fmta ('l', 'like');
+  if (news.comments) action_bar = action_bar + fmta ('c', 'comment');
+                     action_bar = action_bar + fmta ('h', 'help');
   console.log(action_bar);
+}
+
+/**
+ * Formats an action for display
+ */
+function fmta (key, title) {
+  return chalk.dim('(' + key + ') ') + title + ' ';
 }
 
 
@@ -217,6 +293,10 @@ function init () {
 
     fb = require('./yoface.js');
 
+    // Yay!
+    console.log(' News Feed!');
+    console.log('>──────────>\n');
+
     // Log first newsfeed thingy.
     fb.nextNews()
         .then(print_newsfeed_item)
@@ -227,13 +307,6 @@ function init () {
     process.stdin.on('keypress', manage_keys);
     process.stdin.setRawMode(true);
     process.stdin.resume();
-
-
-    // Yay!
-    console.log('News Feed!');
-    console.log('----------\n');
-    console.log('loading...\n');
-
 }
 
 
@@ -244,7 +317,9 @@ function init () {
  */
 var dothismadness = function () {
   return new Promise(function (resolve, reject) {
-    console.log('Falafel!');
+    clear();
+    console.log(appname);
+
     try {
       var authInfo = require('./authInfo');
       if (!authInfo.accessToken) {

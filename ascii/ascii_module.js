@@ -1,12 +1,10 @@
+'use strict';
 // dependencies
 var fs = require('fs'),
     PNG = require('pngjs').PNG,
-    ImageMagick = require("imagemagick"),
-    Couleurs = require("couleurs"),
+    ImageMagick = require('imagemagick'),
+    Couleurs = require('couleurs'),
     Request = require('request');
-    sys = require('sys'),
-    exec = require('child_process').exec,
-    ImageToAscii = require ("./ascii_module");
 
 /**
  *  This function parses the resize object
@@ -18,44 +16,44 @@ function processResize (resize) {
     var self = this;
 
     // initialize the value that will be
-    var finalResize = "";
+    var finalResize = '';
 
     // width is provided
-    if (typeof resize.width === "string") {
+    if (typeof resize.width === 'string') {
 
         // parse integer
         var value = parseInt (resize.width);
 
         // handle percent values
-        if (resize.width.slice(-1) === "%") {
+        if (resize.width.slice(-1) === '%') {
             value = Math.floor(value * (process.stdout.columns || 239) / (100 * self._options.multiplyWidth));
         }
 
         // append the width value
-        finalResize += value + "x";
+        finalResize += value + 'x';
     }
 
     // height is provided
-    if (typeof resize.height === "string") {
+    if (typeof resize.height === 'string') {
 
         // parse integer
         var value = parseInt (resize.height);
 
         // handle percent values
-        if (resize.height.slice(-1) === "%") {
+        if (resize.height.slice(-1) === '%') {
             value = Math.floor(value *( process.stdout.rows || 60) / 100);
         }
 
         if (!finalResize) {
-            finalResize += "x";
+            finalResize += 'x';
         }
 
         // append the height
         finalResize += value;
 
         // both width and height were provided, don't keep aspect ratio
-        if (finalResize.split("x")[0]) {
-            finalResize += "!";
+        if (finalResize.split('x')[0]) {
+            finalResize += '!';
         }
     }
 
@@ -76,7 +74,7 @@ function convertToPng (options, callback) {
     options.resize = Object(options.resize);
 
     // options that will be passed to convert function
-    var tmpPath = "image-" + Math.random().toString(36) + ".png";
+    var tmpPath = 'image-' + Math.random().toString(36) + ".png";
 
     // get the image size
     ImageMagick.identify(options.imagePath, function (err, imageData){
@@ -140,12 +138,12 @@ var ImageToAscii = function (options) {
 
     // use 'new'
     if (this.constructor !== ImageToAscii) {
-        throw new Error ("Use 'new' keyword to create the ImageToAscii instance");
+        throw new Error ('Use 'new' keyword to create the ImageToAscii instance');
     }
 
     // force options to be an object
     self._options = options = Object (options);
-    options.pixels = (String(options.pixels || "") || " .,:;i1tfLCG08@").split("");
+    options.pixels = (String(options.pixels || '') || ' .,:;i1tfLCG08@').split('');
     options.multiplyWidth = Number (options.multiplyWidth) || 2;
 
     // globals
@@ -168,7 +166,7 @@ var ImageToAscii = function (options) {
         for (var i = 0; i < options.pixels.length; ++i) {
 
             // how many times we need to multiply the pixel
-            for (var ii = 0, cPixel = ""; ii < options.multiplyWidth; ++ii) {
+            for (var ii = 0, cPixel = ''; ii < options.multiplyWidth; ++ii) {
                 cPixel += options.pixels[i];
             }
 
@@ -193,15 +191,15 @@ var ImageToAscii = function (options) {
 
         // force callback to be a function
         callback = callback || function () {};
-        if (typeof callback !== "function") {
-            throw new Error ("Callback must be a function");
+        if (typeof callback !== 'function') {
+            throw new Error ('Callback must be a function');
         }
 
         // the string begins with https or http
         if (/^https?:\/\//.test(imagePath)) {
 
             // generate a tmp path
-            var tmpPath = "image-" + Math.random().toString(36);
+            var tmpPath = 'image-' + Math.random().toString(36);
 
             // download the image
             Request(imagePath)
@@ -228,10 +226,10 @@ var ImageToAscii = function (options) {
             var stream = fs.createReadStream(tmpPath).pipe(new PNG({ filterType: 4 }));
 
             // image parsed
-            stream.on("parsed", function () {
+            stream.on('parsed', function () {
 
                 // each pixel
-                for (var y = 0, converted = ""; y < this.height; y++) {
+                for (var y = 0, converted = ''; y < this.height; y++) {
                     for (var x = 0; x < this.width; x++) {
 
                         // get the index, the sum of rgb and build the ASCII pixel
@@ -256,7 +254,7 @@ var ImageToAscii = function (options) {
                     }
 
                     // add new line
-                    converted += "\n";
+                    converted += '\n';
                 }
 
                 // if the image
