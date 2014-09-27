@@ -43,7 +43,8 @@ module.exports = (function () {
 	function YoFace (fb) {
 		this.FB = fb;
 		this.cache = {
-			news : []
+			news : [],
+			freinds : []
 		}
 	}
 
@@ -85,6 +86,26 @@ module.exports = (function () {
 		      }
 		    }
 		);
+	};
+
+	YoFace.prototype.query_friends = function(first_argument) {
+
+		
+		return new Promise (function (resolve, reject) {
+			
+			if (self.cache.news.length === 0) {				
+				FB.api('/me/home', function(err, res) {
+					if (err) reject(err);
+				  	//console.log(res);
+				  	self.cache.news = res.data;
+				  	resolve(self.cache.news.shift())
+				});
+			}
+
+			else {
+				resolve(self.cache.news.shift())
+			}
+		})
 	};
 
 
