@@ -6,15 +6,21 @@ var fs = require('fs'),
 module.exports.download = function(uri, filename, callback){
   request.head(uri, function(err, res, body){
     if (err) console.trace(err);
-    console.log('content-type:', res.headers['content-type']);
-    console.log('content-length:', res.headers['content-length']);
+    // console.log('content-type:', res.headers['content-type']);
+    // console.log('content-length:', res.headers['content-length']);
 
-    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    if (parseInt(res.headers['content-length']) > 0) {
+      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+    }
   });
 }
 
 module.exports.delete = function (path, callback) {
-  fs.unlink(path, function (err) {
-    callback(err);
+  fs.exists(path, function (exists) {
+    if (exists) {
+      fs.unlink(path, function (err) {
+        if (err) callback(err);
+      });
+    }
   });
 }

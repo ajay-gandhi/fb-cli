@@ -1,6 +1,6 @@
-var sys = require('sys');
-var exec = require('child_process').exec;
-var ImageToAscii = require ("./ascii_module");
+var Promise = require('es6-promise').Promise,
+    exec = require('child_process').exec,
+    ImageToAscii = require ("./ascii_module");
 
 var asciiConverter = new ImageToAscii ({
   resize: {
@@ -11,26 +11,28 @@ var asciiConverter = new ImageToAscii ({
   colored: true
 });
 
-module.exports.asciify = function(file) {
-  var filename = file.substring(0, file.lastIndexOf('.'));
-  // Convert image to png
-  var convertImg = exec("convert " + file + " " + filename + ".png", function (error) {
-    if (error !== null) {
-      return "Error converting image: " + error;
-    } else {
-      var output;
-      // Asciify image
-      asciiConverter.convert("./" + filename + ".png", function(err, converted) {
-        if (err) {
-          output = "Error displaying image: " + err;
-        } else {
-          // Output the ascii!
-          output = converted;
-        }
-        // Delete the converted image
-        exec("rm " + filename + ".png");
-        return output;
-      });
-    }
+module.exports = function(file) {
+  return new Promise(function (resolve, reject) {
+    var filename = file.substring(0, file.lastIndexOf('.'));
+    // Convert image to png
+    var convertImg = exec("convert " + file + " " + filename + ".png", function (error) {
+      if (error !== null) {
+        reject(error);
+      } else {
+        // Asciify image
+        asciiConverter.convert("./" + filename + ".png", function(err, converted) {
+          if (err) {
+            // Delete the converted file
+            exec("rm " + filename + ".png");
+            reject(err);
+          } else {
+            // Delete the converted file
+            exec("rm " + filename + ".png");
+            // Output the ascii!
+            resolve(converted);
+          }
+        });
+      }
+    });
   });
 }
