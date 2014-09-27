@@ -3,17 +3,21 @@ var keypress = require('keypress');
 var open = require('open')
 var inquirer = require("inquirer");
 
-// Log first newsfeed thingy.
-fb.nextNews()
-	.then(print_newsfeed_item)
-	.catch(console.error)
 
 // listen for the "keypress" event
 
 var lastitem = null;
 var text = false;
 
+
+/**
+ * Binds character input. Called whenever a key is pressed.
+ * @param  {[type]} ch  [description]
+ * @param  {[type]} key [description]
+ * @return {[type]}     [description]
+ */
 var manage_keys = function (ch, key) {
+	// Were inputing text. Don't do anything else.
 	if (text) return;
 
   
@@ -60,6 +64,9 @@ var manage_keys = function (ch, key) {
   	}
   	inquirer.prompt([question], function( answers ) {
   		console.log('got to post', answers.post);
+  		text = false;
+  		process.stdin.setRawMode(true);
+  		process.stdin.resume();
 
   	});
     return
@@ -68,20 +75,11 @@ var manage_keys = function (ch, key) {
   console.log('got "keypress"', key);
 }
 
-var start_rawmode = function () {
-	console.log('starting rawmode')
-	keypress(process.stdin);
-	process.stdin.on('keypress', manage_keys);
-	process.stdin.setRawMode(true);
-	process.stdin.resume();
 
-}
-
-start_rawmode();
-
-
-
-
+/**
+ * Prints a newsfeed item.
+ * @param  {Newsfeeed item} news
+ */
 function print_newsfeed_item (news) {
 	console.log("--------------------------------------------");
 	if (news.type = 'link') {}
@@ -89,16 +87,11 @@ function print_newsfeed_item (news) {
 	if (news.type = 'photo') {}
 	if (news.type = 'video') {}
 
-	if (news.ascii_img) {
-		console.log('IMAGE')
-		console.log(news.ascii_img)
-		console.log('IMAGEEE')
-	}
-
-
+    // Save item in case user wants to interact with it.
 	lastitem = news;
 
-	console.log(news.from.name, "\n")
+
+	console.log(news.from.name + ":\n")
 
 	if (news.story) console.log(news.story + ":\n");
 	if (news.message) console.log(news.message + "\n");
@@ -130,5 +123,31 @@ function print_newsfeed_item (news) {
 
 	action_bar = action_bar + "(p) post " 
 	console.log(action_bar);
-
 }
+
+
+
+/**
+ * Inits this madness.
+ */
+function init () {
+
+    // Log first newsfeed thingy.
+    fb.nextNews()
+        .then(print_newsfeed_item)
+        .catch(console.error)
+    
+    // Set up the key catching
+    keypress(process.stdin);
+    process.stdin.on('keypress', manage_keys);
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+
+
+    // Yay!
+    console.log('News Feed!');
+    console.log('----------\n');
+}
+
+
+init();

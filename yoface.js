@@ -1,6 +1,7 @@
 var Promise = require('es6-promise').Promise;
 var utils = require('./utils');
 var Ascii = require('ascii');
+var Facebook = require('facebook-node-sdk');
 
 
 module.exports = (function () {
@@ -10,11 +11,9 @@ module.exports = (function () {
 	var config = {
 		appID: '698243363597060', 
 		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
-		token: 'CAAJ7DHOnawQBAA6AFS68RPaasmyRzbl9cyhiXHMLB6ZBMj4W4VdvrK06xa8BZCYOWDm1ZAE32hA6LfXn8SvPBjDOk9IGZAfIirLgpnArbvE70rgU9g2RM2RnjSdaqU57C9vEZApuueTPUUD5qDIkjo50hcjz9FZAnlEnnNFWDie1jZBZCQZBxRK6wcdmaZBispeZCZBh2zlZCfZAE1lQ6bw1Bhy70wD9jWIgPXjgsZD',
-		tokev: 'CAAJ7DHOnawQBAFELtCapEm8C7VqO0bSHukSEevuE53AaWObnUM2O7gbhq5VAVCqkvB0eteNbR3QsUx6keuPdOZAjZCoZAie8I4niiDg3ZCsznr6zwFF6tZCi8JKyab3SLQp6mDg4fWCO2IgFU7y7G1tY9dPRMIVYgrZAml233lP6LacOEj6tZB4Bob1zmmHXb9I26851LUDl1utEnHqerCA'
+		token: 'CAACEdEose0cBAPOrmltEp9MfunPOORs7yzKNUOBbGTEfy0zJvZBKLsfSU20XiTV6dyFDJ64580A3tFH6f54m957BWDaF0ZCtUt80MV4dDrVvWtDCRe9eA7YIJnQ8nWmTL6082H4nFWIvZAmBWiP3pwRu0OGn1W3ZBCcrJa1z9ZCftmx637lRwWBAysn9ule9BzeUeR15PtB1TnLCMXqzV',
 	}
 
-	var Facebook = require('facebook-node-sdk');
 
 	function ActualFacebook (config) {
 
@@ -26,7 +25,7 @@ module.exports = (function () {
 		  }).setAccessToken(token);
 		};
 
-		return fb = createFB(config.appID, config.secret, config.tokev)
+		return fb = createFB(config.appID, config.secret, config.token)
 
 	}
 
@@ -38,7 +37,10 @@ module.exports = (function () {
 	///
 
 
-
+	/**
+	 * Initializes yo facebook object, dawg.
+	 * @param {[type]} fb [description]
+	 */
 	function YoFace (fb) {
 		this.fb = fb;
 		this.cache = {
@@ -46,7 +48,10 @@ module.exports = (function () {
 		}
 	}
 
-
+	/**
+	 * Returns a promise for the next news feed element in the users' newsfeed.
+	 * @return {[type]} [description]
+	 */
 	YoFace.prototype.nextNews = function() {
 		var self = this;
 
@@ -58,59 +63,59 @@ module.exports = (function () {
 					if (err) reject(err);
 				  	//console.log(res);
 				  	self.cache.news = res.data;
-				  	resolve(self.next_news())
+				  	resolve(self.cache.news.shift())
 				});
 			}
 
 			else {
-				resolve(self.next_news())
+				resolve(self.cache.news.shift())
 			}
 		})
+	};
+
+
+
+	YoFace.prototype.like = function(page) {
 		
 	};
 
-	
 
-	YoFace.prototype.next_news = function () {
-		var self = this;
+	// YoFace.prototype.next_news = function () {
+	// 	var self = this;
 
-		return new Promise(function (resolve, reject) {
-			var news = self.cache.news.shift();
+	// 	return new Promise(function (resolve, reject) {
+	// 		var news = self.cache.news.shift();
 
-			if (false) {
-				var url = "http://graph.facebook.com/"+news.id+"/picture"
+	// 		if (false) {
+	// 			var url = "http://graph.facebook.com/"+news.id+"/picture"
 
-				utils.delete('cache.jpeg', function (err) {
-					if (err) {
-						console.error(err);
-						resolve(news)
-					}
+	// 			utils.delete('cache.jpeg', function (err) {
+	// 				if (err) {
+	// 					console.error(err);
+	// 					resolve(news)
+	// 				}
 
-					utils.download(url, 'cache.jpeg', function(){
+	// 				utils.download(url, 'cache.jpeg', function(){
 
-					  var pic = new Ascii('cache.jpeg');
-					  pic.convert(function(err, result) {
-					    if (err) console.trace(err);
+	// 				  var pic = new Ascii('cache.jpeg');
+	// 				  pic.convert(function(err, result) {
+	// 				    if (err) console.trace(err);
 
-					    news.ascii_img = result;
-					    console.log(news)
-					    resolve(news);
+	// 				    news.ascii_img = result;
+	// 				    console.log(news)
+	// 				    resolve(news);
 
-					  });
-					});
+	// 				  });
+	// 				});
+	// 			});
 
+	// 		} else { resolve(news) }
+	// 	});
 
-				});
-
-			} else { resolve(news) }
-
-			
-		
-		});
-
-	}
+	//}
 
 	};
 
 	return new YoFace(fb);
+
 })();
