@@ -114,6 +114,25 @@ module.exports = (function () {
 
 	//}
 
+	YoFace.prototype.post = function(message){
+		var self = this;
+		fb.api(
+			"me/feed",
+			"POST",
+			{
+				"message":message;
+			}
+			function(response){
+				if(response && !response.error){
+					
+				}
+			}
+
+
+		);
+
+	};
+
 	return new YoFace(fb);
 
 })();
