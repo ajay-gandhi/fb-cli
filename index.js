@@ -37,7 +37,7 @@ var manage_keys = function (ch, key) {
 
   // Like.
   if (key && lastitem && key.name == 'l') {
-<<<<<<< HEAD
+
     console.log('gotta like', lastitem.id ,'!')
     fb.like(lastitem.id);
 
@@ -47,9 +47,7 @@ var manage_keys = function (ch, key) {
   // View likes
   if (key && lastitem && key.name == 'v') {
     console.log('gotta show likes for', lastitem.id ,'.')
-=======
-    fb.like(lastitem.id);
->>>>>>> 27f19ef5b056c2e198f55aa13be0122e1e661a9a
+
     return
   }
 
