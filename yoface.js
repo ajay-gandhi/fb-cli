@@ -75,8 +75,19 @@ module.exports = (function () {
 
 
 
-	YoFace.prototype.like = function(page) {
-		
+	YoFace.prototype.like = function(postID) {
+		var url = "/" + postId+"/likes"
+		FB.api(
+			url,
+			"POST",
+			function(response){
+				if (response && !response.error) {
+					
+      			}	
+			}
+
+
+		)
 	};
 
 
