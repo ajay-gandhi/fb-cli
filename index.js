@@ -62,6 +62,17 @@ var manage_keys = function (ch, key) {
     return;
   }
 
+  // Help
+  if (key && key.ctrl && key.name == 'h') {
+    console.log('press \'esc\' for command mode');
+    return;
+  }
+
+  // Command mode.
+  if (key && key.ctrl && key.name == 'escape') {
+    return;
+  }
+
   // Comment.
   if (key && lastitem && key.name == 'c') {
     var askComment = [{
@@ -80,8 +91,9 @@ var manage_keys = function (ch, key) {
   // Like.
   if (key && lastitem && key.name == 'l') {
 
-    console.log('gotta like', lastitem.id ,'!');
     fb.like(lastitem.id);
+    console.log('liked!');
+
 
     return;
   }
@@ -116,6 +128,14 @@ var manage_keys = function (ch, key) {
 
   console.log('got:keypress', key);
 };
+
+var inputMode = function (input) {
+  if (input) {
+    process.stdin.setRawMode(false); text = true;
+  } else {
+    process.stdin.setRawMode(true); text = false;
+  }
+}
 
 
 /**
@@ -154,9 +174,9 @@ function print_newsfeed_item (news) {
 		console.log(msg + '\n');
 		
 	} 
-	if (news.type === 'link') {
-		console.log(msg + '\n');
-	}
+	// if (news.type === 'link') {
+	// 	console.log(msg + '\n');
+	// }
 
 
 	// Build that likes message 
@@ -233,7 +253,7 @@ var dothismadness = function () {
     } catch (e) {
       console.log('Looks like you have to login.');
       var hack = require('./server');
-      return hack.showLogin().then(init).catch(console.trace);
+      return hack.showLogin().then(init).catch(reject);
     }
 
     resolve({});
