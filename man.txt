@@ -6,7 +6,7 @@
   {"catName": "DESCRIPTION",
     "content": "facebook allows you to access your newsfeed, like news items, post statuses, and poke friends."},
   {"catName": "ARGUMENTS", "content":
-    "newsfeed\tDisplays the latest item in your newsfeed. Press [spacebar] to display the next item, and [l] (\"ell\") to like a post.\n\tpost\t\tPost takes a string, which is posted as a new Facebook status.\n\tpoke\t\tPoke takes a string, then searches your friends for a matching name and pokes them."
+    "newsfeed\tDisplays the latest item in your newsfeed. Press:\n\t\t\t\t[spacebar] to display the next item\n\t\t\t\t[l] (\"ell\") to like a post\n\t\t\t\t[o] to open in browser.\n\tpost\t\tPost takes a string, which is posted as a new Facebook status.\n\tpoke\t\tPoke takes a string, then searches your friends for a matching name and pokes them."
   }
   ]
 }
