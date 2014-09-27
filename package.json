@@ -1,0 +1,28 @@
+{
+  "name": "Facebooker",
+  "version": "0.0.0",
+  "description": "Facebook for the leet",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/ajay-gandhi/fb-cli"
+  },
+  "keywords": [
+    "facebook",
+    "cool",
+    "big-red-hacks"
+  ],
+  "author": "Ajay and Kevin",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ajay-gandhi/fb-cli/issues"
+  },
+  "homepage": "https://github.com/ajay-gandhi/fb-cli",
+  "dependencies": {
+    "args": "0.0.3",
+    "inquirer": "^0.8.0"
+  }
+}
