@@ -11,7 +11,7 @@ module.exports = (function () {
 	var config = {
 		appID: '698243363597060', 
 		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
-		token: 'CAACEdEose0cBAPOrmltEp9MfunPOORs7yzKNUOBbGTEfy0zJvZBKLsfSU20XiTV6dyFDJ64580A3tFH6f54m957BWDaF0ZCtUt80MV4dDrVvWtDCRe9eA7YIJnQ8nWmTL6082H4nFWIvZAmBWiP3pwRu0OGn1W3ZBCcrJa1z9ZCftmx637lRwWBAysn9ule9BzeUeR15PtB1TnLCMXqzV',
+		token: 'CAACEdEose0cBAPSdu2PZC3lchZCoX8KGOZBRzDcAVvCAwhe50rgq6cpmZB6cjx8ZAOvZAkGuv2lV1xCttsZAgYN6QD4XcFUliGv5tLDudckYrhOsTcfqJXj8oLkaCZBzqwA4C5ZCC1zxMRsab501VUV6KEtIkA63I3Qym2vZCANJqUWYJy5ZC401QrHiot2Lja9flSxjDP7ljklteeWJ9ZBr90ZB6',
 	}
 
 
@@ -78,7 +78,7 @@ module.exports = (function () {
 		    "/me/feed",
 		    "POST",
 		    {
-		        "message": "IF THIS WORKS IM GONNA JUMP."
+		        "message": message
 		    },
 		    function (response) {
 		      if (response && !response.error) {
