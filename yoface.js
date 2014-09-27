@@ -115,7 +115,7 @@ module.exports = (function () {
 	};
 
 	YoFace.prototype.comment = function(postId, message) {
-		var url = "/" + postId + "comments";
+		var url = "/" + postId + "/comments";
 
 		FB.api(
 			url,
