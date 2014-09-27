@@ -23,6 +23,10 @@
   "homepage": "https://github.com/ajay-gandhi/fb-cli",
   "dependencies": {
     "args": "0.0.3",
-    "inquirer": "^0.8.0"
+    "ascii": "^0.1.0",
+    "es6-promise": "^1.0.0",
+    "inquirer": "^0.8.0",
+    "open": "0.0.5",
+    "request": "^2.44.0"
   }
 }
