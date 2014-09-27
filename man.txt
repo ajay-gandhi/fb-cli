@@ -1,0 +1,12 @@
+{"header": "FACEBOOK",
+ "categories":[
+  {"catName": "NAME", "content": "facebook - Command line interface for Facebook"},
+  {"catName": "SYNOPSIS", "content": "facebook [arguments] [parameters]"},
+  {"catName": "COPYRIGHT", "content": "facebook is open source and available on Github"},
+  {"catName": "DESCRIPTION",
+    "content": "facebook allows you to access your newsfeed, like news items, post statuses, and poke friends."},
+  {"catName": "ARGUMENTS", "content":
+    "newsfeed\tDisplays the latest item in your newsfeed. Press [spacebar] to display the next item, and [l] (\"ell\") to like a post.\n\tpost\t\tPost takes a string, which is posted as a new Facebook status.\n\tpoke\t\tPoke takes a string, then searches your friends for a matching name and pokes them."
+  }
+  ]
+}

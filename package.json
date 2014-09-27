@@ -23,6 +23,7 @@
   "homepage": "https://github.com/ajay-gandhi/fb-cli",
   "dependencies": {
     "args": "0.0.3",
+    "chalk": "^0.5.1",
     "inquirer": "^0.8.0"
   }
 }
