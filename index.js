@@ -146,14 +146,10 @@ function print_newsfeed_item (news) {
 
 	// Build the action bar at the bottom.
 	var action_bar = ""
-<<<<<<< HEAD
-	if (news.link) action_bar = action_bar + "(o) open link " 
-  if (news.likes) action_bar = action_bar + "(l) like " 
-=======
+
 	if (news.link) action_bar = action_bar + "(o) open " ;
     if (news.like) action_bar = action_bar + "(o) open " ;
-    if (news.message) action_bar = action_bar + "(l) like this";
->>>>>>> 0001ec941cd30f2f6d06723901a4a7ff36c85761
+    if (news.message) action_bar = action_bar + "(l) like this ";
 
 	action_bar = action_bar + "(p) post " 
 	console.log(action_bar);
