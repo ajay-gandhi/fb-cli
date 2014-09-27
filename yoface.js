@@ -21,16 +21,9 @@ module.exports = (function () {
 		};
 
 		return fb = createFB(config.appID, config.secret, authInfo.accessToken)
-
 	}
 
 	var FB = new ActualFacebook(config);
-
-	//////////////////
-	///
-	///
-	///
-
 
 	/**
 	 * Initializes yo facebook object, dawg.
@@ -118,10 +111,7 @@ module.exports = (function () {
 				if (response && !response.error) {
 					console.log(response)
       			}	
-			}
-
-
-		)
+			});
 	};
 
 	YoFace.prototype.comment = function(postId, message) {

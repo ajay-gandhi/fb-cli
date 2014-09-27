@@ -1,31 +1,33 @@
-var keypress = require('keypress');
-var open = require('open')
-var inquirer = require("inquirer");
-var chalk = require('chalk');
+'use strict';
+var keypress = require('keypress'),
+    open = require('open'),
+    inquirer = require('inquirer'),
+    chalk = require('chalk'),
+    Promise = require('es6-promise').Promise;
 var fb;
 // listen for the "keypress" event
 
 var lastitem = null;
 var text = false;
-var httpRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+var httpRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
 
 
 /**
  * Gets the number of columns and rows in current terminal window
  */
-var spawn = require('child_process').spawn
+var spawn = require('child_process').spawn;
 function getTermSize(cb){
-    var cols, lines
+    var cols, lines;
     spawn('tput', ['cols']).stdout.on('data', function(data){
-        cols = Number(data)
+        cols = Number(data);
         if (cols && lines && cb)
-            cb(cols, lines)
-    })
+            cb(cols, lines);
+    });
     spawn('tput', ['lines']).stdout.on('data', function(data){
-        lines = Number(data)
+        lines = Number(data);
         if (cols && lines && cb)
-            cb(cols, lines)
-    })
+            cb(cols, lines);
+    });
 }
 var cols, lines;
 getTermSize(function(c, l) {
@@ -49,52 +51,52 @@ var manage_keys = function (ch, key) {
 	fb.nextNews()
 		.then(print_newsfeed_item)
 		.catch(console.error)
-	return
+	return;
   }
 
 
   // Quit.
   if (key && key.ctrl && key.name == 'c') {
     process.stdin.pause();
-    return
+    return;
   }
 
   // Comment.
   if (key && lastitem && key.name == 'c') {
     var askComment = [{
-      type: "input",
-      name: "comment",
-      message: "What do you want to say?"
+      type: 'input',
+      name: 'comment',
+      message: 'What do you want to comment?'
     }];
     var commentMessage;
     inquirer.prompt(askComment, function(answer) {
       commentMessage = answer.comment;
     });
     fb.comment(lastitem.id, commentMessage);
-    return
+    return;
   }
 
   // Like.
   if (key && lastitem && key.name == 'l') {
 
-    console.log('gotta like', lastitem.id ,'!')
+    console.log('gotta like', lastitem.id ,'!');
     fb.like(lastitem.id);
 
-    return
+    return;
   }
 
   // View likes
   if (key && lastitem && key.name == 'v') {
-    console.log('gotta show likes for', lastitem.id ,'.')
+    console.log('gotta show likes for', lastitem.id ,'.');
 
-    return
+    return;
   }
 
   // Open on the browser
   if (key && lastitem && key.name == 'o') {
-    console.log('gotta open', lastitem.id ,'in browser')
+    console.log('gotta open', lastitem.id ,'in browser');
     open(lastitem.link);
-    return
+    return;
   }
 
   // Post
@@ -105,22 +107,21 @@ var manage_keys = function (ch, key) {
   		type : 'input',
   		name : 'post',
   		message : 'Whats on your mind?'
-  	}
+  	};
 
   	inquirer.prompt([question], function( answers ) {
-  		console.log('Posted', answers.post + "!");
-      
+  		console.log('Posted', answers.post + '!');
       fb.post(answers.post);
   		
       text = false;
   		process.stdin.setRawMode(true);
   		process.stdin.resume();
   	});
-    return
+    return;
   }
 
-  console.log('got "keypress"', key);
-}
+  console.log('got:keypress', key);
+};
 
 
 /**
@@ -128,9 +129,9 @@ var manage_keys = function (ch, key) {
  * @param  {Newsfeeed item} news
  */
 function print_newsfeed_item (news) {
-  var separator = "";
+  var separator = '';
   for (var i = 0; i < cols; i++) {
-    separator += "-";
+    separator += '-';
   }
 	console.log(chalk.cyan(separator));
 	//nice sugar
@@ -138,61 +139,60 @@ function print_newsfeed_item (news) {
 
 	//does this do anything???
 
-	if (news.type = 'link') {}
-	if (news.type = 'status') {}
-	if (news.type = 'photo') {}
-	if (news.type = 'video') {}
+	// if (news.type = 'link') {}
+	// if (news.type = 'status') {}
+	// if (news.type = 'photo') {}
+	// if (news.type = 'video') {}
 
     // Save item in case user wants to interact with it.
 	lastitem = news;
 
 
-	console.log(chalk.bgCyan(chalk.black(news.from.name)) + ":\n")
+	console.log(chalk.bgCyan(chalk.black(news.from.name)) + ':\n')
 
-	if (news.story) console.log(news.story + "\n");
+	if (news.story) console.log(news.story + '\n');
 	if (news.message){
 		var msg = news.message;
 		var matches = msg.match(httpRegex);
 		if(matches){
 			msg = msg.replace(matches[0],chalk.cyan(chalk.underline(matches[0])));
 		}
-		console.log(msg + "\n");
+		console.log(msg + '\n');
 		
 	} 
-	if (news.type === "link") {
+	if (news.type === 'link') {
 
-		console.log(msg+ "\n");
+		console.log(msg+ '\n');
 
 	}
 
 
 	// Build that likes message 
-	var others_msg = ""
+	var others_msg = '';
 	if (news.likes) {
-		var others_msg = "" + news.likes.data.length + ' ';
-		if (news.likes.paging.next) others_msg = others_msg + "+ "
-		others_msg = others_msg + "likes.  "
+		others_msg = others_msg + news.likes.data.length + ' ';
+		if (news.likes.paging.next) others_msg = others_msg + '+ ';
+		others_msg = others_msg + 'likes.  ';
 	}
 
 	// Build that likes message 
 	if (news.comments) {
-		var others_msg = "(b) " + news.comments.data.length + ' ';
-		if (news.comments.paging.next) others_msg = others_msg + "+ "
-		others_msg = others_msg + "comments."
+		others_msg = others_msg + news.comments.data.length + ' ';
+		if (news.comments.paging.next) others_msg = others_msg + '+ ';
+		others_msg = others_msg + 'comments.';
 	}
 
 	// Post likes + comments.
-	if (others_msg != '') console.log(others_msg,'\n');
+	if (others_msg !== '') console.log(others_msg,'\n');
 
 
 	// Build the action bar at the bottom.
-	var action_bar = ""
+	var action_bar = '';
+	if (news.link) action_bar    = action_bar + '(o) open ' ;
+  if (news.like) action_bar    = action_bar + '(o) open ' ;
+  if (news.message) action_bar = action_bar + '(l) like this ';
 
-	if (news.link) action_bar = action_bar + "(o) open " ;
-    if (news.like) action_bar = action_bar + "(o) open " ;
-    if (news.message) action_bar = action_bar + "(l) like this ";
-
-	action_bar = action_bar + "(p) post "
+	action_bar = action_bar + '(p) post ';
 	console.log(action_bar);
 }
 
@@ -224,13 +224,34 @@ function init () {
 
 }
 
-var config = require('./config');
 
-if (!config.accessToken) {
-  console.log('Looks like you have to login.')
-  var hack = require('./server');
-  hack.showLogin()
+
+/**
+ * Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
+ * @return {Awesomeness} 2 pounds and a half of it.
+ */
+var dothismadness = function () {
+  return new Promise(function (resolve, reject) {
+    console.log('Falafel!');
+    try {
+      var authInfo = require('./authInfo');
+      if (!authInfo.accessToken) {
+        throw new Error();
+      }
+    } catch (e) {
+      console.log('Looks like you have to login.');
+      var hack = require('./server');
+      return hack.showLogin();
+    }
+
+    resolve({})
+  });
+};
+
+var good = dothismadness()
     .then(init)
-    .catch(console.trace)
-}
+    .catch(console.trace);
+
+
+
 

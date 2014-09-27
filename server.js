@@ -32,8 +32,6 @@ module.exports = (function () {
 				var url_parts = url.parse(req.url, true);
 				var query = url_parts.query;
 
-				console.log(query);
-
 				if (Object.keys(query).length === 0) {
 					var fileStream = fs.createReadStream('./do/login.html');
 					fileStream.pipe(res);
