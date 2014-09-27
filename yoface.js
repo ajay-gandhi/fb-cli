@@ -10,7 +10,7 @@ module.exports = (function () {
 	var config = {
 		appID: '698243363597060', 
 		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
-		token: 'CAACEdEose0cBAPSdu2PZC3lchZCoX8KGOZBRzDcAVvCAwhe50rgq6cpmZB6cjx8ZAOvZAkGuv2lV1xCttsZAgYN6QD4XcFUliGv5tLDudckYrhOsTcfqJXj8oLkaCZBzqwA4C5ZCC1zxMRsab501VUV6KEtIkA63I3Qym2vZCANJqUWYJy5ZC401QrHiot2Lja9flSxjDP7ljklteeWJ9ZBr90ZB6',
+		token: 'CAACEdEose0cBABHYxbxbAsffYO7GlnrPOzXt91XiZAExghpZAKny6pGudfKBWxRKeHF4XTdUQBDZBdWwqmoO7KllznUZA7RNicbZCqohyMxqPTCohY7aPRpolIZAhVM9fXxgWfKISSV8gLwDwgLPnHMhkavLImEv0rtVgohN7mXJ4vYGZAz1zc5ThiiFmeDZC3DotvQC3Vnmc0VTj2KFzTc2DeAv5EjvEYUZD',
 	}
 
 

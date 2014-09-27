@@ -2,12 +2,14 @@ var fb = require('./yoface.js');
 var keypress = require('keypress');
 var open = require('open')
 var inquirer = require("inquirer");
-
+var chalk = require('chalk');
 
 // listen for the "keypress" event
 
 var lastitem = null;
 var text = false;
+var httpRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
+
 
 
 /**
@@ -89,7 +91,12 @@ var manage_keys = function (ch, key) {
  * @param  {Newsfeeed item} news
  */
 function print_newsfeed_item (news) {
-	console.log("--------------------------------------------");
+	console.log(chalk.cyan("--------------------------------------------"));
+	//nice sugar
+	
+
+	//does this do anything???
+
 	if (news.type = 'link') {}
 	if (news.type = 'status') {}
 	if (news.type = 'photo') {}
@@ -99,11 +106,23 @@ function print_newsfeed_item (news) {
 	lastitem = news;
 
 
-	console.log(news.from.name + ":\n")
+	console.log(chalk.bgCyan(chalk.black(news.from.name)) + ":\n")
 
 	if (news.story) console.log(news.story + "\n");
-	if (news.message) console.log(news.message + "\n");
-	if (news.type === "link") console.log(news.link + "\n")
+	if (news.message){
+		var msg = news.message;
+		var matches = msg.match(httpRegex);
+		if(matches){
+			msg = msg.replace(matches[0],chalk.cyan(chalk.underline(matches[0])));
+		}
+		console.log(msg + "\n");
+		
+	} 
+	if (news.type === "link") {
+
+		console.log(msg+ "\n");
+
+	}
 
 
 	// Build that likes message 
@@ -127,8 +146,9 @@ function print_newsfeed_item (news) {
 
 	// Build the action bar at the bottom.
 	var action_bar = ""
-	if (news.link) action_bar = action_bar + "(o) open " 
-  if (news.like) action_bar = action_bar + "(o) open " 
+	if (news.link) action_bar = action_bar + "(o) open " ;
+    if (news.like) action_bar = action_bar + "(o) open " ;
+    if (news.message) action_bar = action_bar + "(l) like this";
 
 	action_bar = action_bar + "(p) post " 
 	console.log(action_bar);
