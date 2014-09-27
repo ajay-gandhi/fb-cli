@@ -1,6 +1,7 @@
 var Promise = require('es6-promise').Promise,
     Facebook = require('facebook-node-sdk'),
     fileUtils = require('./file_utils.js'),
+    readline = require('readline'),
     ascii = require('./ascii/ascii.js');
 
 module.exports = (function () {
@@ -9,7 +10,6 @@ module.exports = (function () {
 
 	var config = require('./config')
 	var authInfo = require('./authInfo')
-
 
 	function ActualFacebook (config) {
 
@@ -21,7 +21,7 @@ module.exports = (function () {
 		  }).setAccessToken(token);
 		};
 
-		return fb = createFB(config.appID, config.secret, authInfo.accessToken)
+		return fb = createFB(config.appID, config.secret, authInfo.accessToken);
 	}
 
 	var FB = new ActualFacebook(config);
@@ -35,7 +35,7 @@ module.exports = (function () {
 		this.cache = {
 			news : [],
 			news_next : null,
-			freinds : []
+			friends : []
 		}
 	}
 
@@ -61,6 +61,9 @@ module.exports = (function () {
           self.cache.news = res.data;
           var nextItem = self.cache.news.shift();
 
+          // Remove the loading indicator
+          process.stdout.write('\u001B[1A\u001B[2K');
+
 					// Download image and convert to ascii
           var url = nextItem.picture;
 
@@ -76,7 +79,21 @@ module.exports = (function () {
 			  	resolve(nextItem);
 				});
 			} else {
-				resolve(self.cache.news.shift())
+        var nextItem = self.cache.news.shift();
+
+        // Download image and convert to ascii
+        var url = nextItem.picture;
+
+        fileUtils.delete('cache.jpg', function(error) {
+          console.log(error);
+        });
+        fileUtils.download(url, 'cache.jpg', function() {
+          ascii('cache.jpg')
+            .then(function(output) { console.log(output); })
+            .catch(function() {});
+        });
+
+				resolve(nextItem);
 			}
 		})
 	};
