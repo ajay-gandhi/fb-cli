@@ -1,5 +1,7 @@
 var Promise = require('es6-promise').Promise;
 var Facebook = require('facebook-node-sdk');
+var fileUtils = require('./file_utils.js');
+var ascii = require('ascii/ascii.js');
 
 
 module.exports = (function () {
@@ -53,13 +55,21 @@ module.exports = (function () {
 				// >> Add support for newsfeed pagination
 				FB.api('/me/home', function(err, res) {
 					if (err) reject(err);
-				  	//console.log(res);
-				  	self.cache.news = res.data;
-				  	resolve(self.cache.news.shift())
-				});
-			}
 
-			else {
+					// Download image and convert to ascii
+			  	var url = "http://graph.facebook.com/" + news.id + "/picture"
+
+			  	fileUtils.delete('cache.jpg', function(error) {
+			  		console.log(error);
+			  	});
+	 				fileUtils.download(url, 'cache.jpg', function() {
+	 				  console.log(ascii.asciify('cache.jpg'));
+	 				});
+
+			  	self.cache.news = res.data;
+			  	resolve(self.cache.news.shift());
+				});
+			} else {
 				resolve(self.cache.news.shift())
 			}
 		})
