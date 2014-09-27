@@ -5,6 +5,7 @@ var fs = require('fs'),
 
 module.exports.download = function(uri, filename, callback){
   request.head(uri, function(err, res, body){
+  	if (err) console.trace(err);
     console.log('content-type:', res.headers['content-type']);
     console.log('content-length:', res.headers['content-length']);
 

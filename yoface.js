@@ -5,11 +5,13 @@ var Ascii = require('ascii');
 
 module.exports = (function () {
 
+	////////////////
+
 	var config = {
 		appID: '698243363597060', 
 		secret: 'ed984e63cb8d378122fc5bd43dc962d6',
 		token: 'CAAJ7DHOnawQBAA6AFS68RPaasmyRzbl9cyhiXHMLB6ZBMj4W4VdvrK06xa8BZCYOWDm1ZAE32hA6LfXn8SvPBjDOk9IGZAfIirLgpnArbvE70rgU9g2RM2RnjSdaqU57C9vEZApuueTPUUD5qDIkjo50hcjz9FZAnlEnnNFWDie1jZBZCQZBxRK6wcdmaZBispeZCZBh2zlZCfZAE1lQ6bw1Bhy70wD9jWIgPXjgsZD',
-		tokev: 'CAAJ7DHOnawQBAML5zGzIlhaKMcwroRM3DxRGgLPF3CXUeqirM7T4ZBtys7gleactcea4fGGG7BFFbhOheauozQBxRdjak3rAZCNxX2wGY7ZC8bJfQLQsZAMnhJj3MxcUXSTfnQCcL6vmCTFTv12PmeXvTiV6ohfGA1BYW8jlJmaqZCZAitIG5wPYuWfhz9al9oGRfxXjl6T1TGQZC4RXOsy'
+		tokev: 'CAAJ7DHOnawQBAFELtCapEm8C7VqO0bSHukSEevuE53AaWObnUM2O7gbhq5VAVCqkvB0eteNbR3QsUx6keuPdOZAjZCoZAie8I4niiDg3ZCsznr6zwFF6tZCi8JKyab3SLQp6mDg4fWCO2IgFU7y7G1tY9dPRMIVYgrZAml233lP6LacOEj6tZB4Bob1zmmHXb9I26851LUDl1utEnHqerCA'
 	}
 
 	var Facebook = require('facebook-node-sdk');
@@ -31,6 +33,11 @@ module.exports = (function () {
 	var fb = new ActualFacebook(config);
 
 	//////////////////
+	///
+	///
+	///
+
+
 
 	function YoFace (fb) {
 		this.fb = fb;
@@ -38,6 +45,7 @@ module.exports = (function () {
 			news : []
 		}
 	}
+
 
 	YoFace.prototype.nextNews = function() {
 		var self = this;
@@ -61,22 +69,43 @@ module.exports = (function () {
 		
 	};
 
+	
+
 	YoFace.prototype.next_news = function () {
 		var self = this;
 
 		return new Promise(function (resolve, reject) {
 			var news = self.cache.news.shift();
 
-			utils.delete('cache.png', function (err) {
-				utils.download(news.picture, './cache.png', function(){
-				  var pic = new Ascii('./cache.jpeg');
-				  pic.convert(function(err, result) {
-				    if (err) reject(err);
-				    news.ascii_img = result;
-				    resolve(news)
-				  });
+			if (false) {
+				var url = "http://graph.facebook.com/"+news.id+"/picture"
+
+				utils.delete('cache.jpeg', function (err) {
+					if (err) {
+						console.error(err);
+						resolve(news)
+					}
+
+					utils.download(url, 'cache.jpeg', function(){
+
+					  var pic = new Ascii('cache.jpeg');
+					  pic.convert(function(err, result) {
+					    if (err) console.trace(err);
+
+					    news.ascii_img = result;
+					    console.log(news)
+					    resolve(news);
+
+					  });
+					});
+
+
 				});
-			});
+
+			} else { resolve(news) }
+
+			
+		
 		});
 
 	}
