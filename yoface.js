@@ -29,7 +29,7 @@ module.exports = (function () {
 
 	}
 
-	var fb = new ActualFacebook(config);
+	var FB = new ActualFacebook(config);
 
 	//////////////////
 	///
@@ -42,7 +42,7 @@ module.exports = (function () {
 	 * @param {[type]} fb [description]
 	 */
 	function YoFace (fb) {
-		this.fb = fb;
+		this.FB = fb;
 		this.cache = {
 			news : []
 		}
@@ -59,7 +59,7 @@ module.exports = (function () {
 			
 			if (self.cache.news.length === 0) {				
 				// >> Add support for newsfeed pagination
-				fb.api('/me/home', function(err, res) {
+				FB.api('/me/home', function(err, res) {
 					if (err) reject(err);
 				  	//console.log(res);
 				  	self.cache.news = res.data;
@@ -74,7 +74,7 @@ module.exports = (function () {
 	};
 
 	YoFace.prototype.post = function(message) {
-		fb.api(
+		FB.api(
 		    "/me/feed",
 		    "POST",
 		    {
@@ -90,13 +90,13 @@ module.exports = (function () {
 
 
 	YoFace.prototype.like = function(postID) {
-		var url = "/" + postId+"/likes"
+		var url = "/" + postID+"/likes"
 		FB.api(
 			url,
 			"POST",
 			function(response){
 				if (response && !response.error) {
-					
+					console.log(response)
       			}	
 			}
 
