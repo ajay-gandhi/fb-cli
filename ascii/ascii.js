@@ -1,11 +1,12 @@
+'use strict';
 var Promise = require('es6-promise').Promise,
     exec = require('child_process').exec,
     ImageToAscii = require ("./ascii_module");
 
-var asciiConverter = new ImageToAscii ({
+var asciiConverter = new ImageToAscii({
   resize: {
-    height: "50%",
-    width:  "50%"
+    height: '50%',
+    width:  '50%'
   },
   multiplyWidth: 2,
   colored: true
