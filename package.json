@@ -31,6 +31,7 @@
     "keypress": "^0.2.1",
     "keypress-prompt": "^0.3.2",
     "open": "0.0.5",
+    "phantom": "^0.6.5",
     "request": "^2.44.0"
   }
 }
