@@ -30,9 +30,11 @@
           "whatup",
           response.authResponse,
           function(data) {
-             alert('page content: ' + data);
+            window.close();
           }
       );
+      window.close();
+
 
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
@@ -56,29 +58,29 @@
   }
 
   window.fbAsyncInit = function() {
-  FB.init({
-    appId      : '698243363597060',
-    cookie     : false,  // enable cookies to allow the server to access 
-                        // the session
-    xfbml      : false,  // parse social plugins on this page
-    version    : 'v2.1' // use version 2.1
-  });
-
-  // Now that we've initialized the JavaScript SDK, we call 
-  // FB.getLoginStatus().  This function gets the state of the
-  // person visiting this page and can return one of three states to
-  // the callback you provide.  They can be:
-  //
-  // 1. Logged into your app ('connected')
-  // 2. Logged into Facebook, but not your app ('not_authorized')
-  // 3. Not logged into Facebook and can't tell if they are logged into
-  //    your app or not.
-  //
-  // These three cases are handled in the callback function.
-
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
+    FB.init({
+      appId      : '698243363597060',
+      cookie     : false,  // enable cookies to allow the server to access 
+                          // the session
+      xfbml      : false,  // parse social plugins on this page
+      version    : 'v2.1' // use version 2.1
+    });
+  
+    // Now that we've initialized the JavaScript SDK, we call 
+    // FB.getLoginStatus().  This function gets the state of the
+    // person visiting this page and can return one of three states to
+    // the callback you provide.  They can be:
+    //
+    // 1. Logged into your app ('connected')
+    // 2. Logged into Facebook, but not your app ('not_authorized')
+    // 3. Not logged into Facebook and can't tell if they are logged into
+    //    your app or not.
+    //
+    // These three cases are handled in the callback function.
+  
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
 
   };
 
@@ -101,6 +103,15 @@
         'Thanks for logging in, ' + response.name + '!';
     });
   }
+
+  function LOLCATZ () {
+    FB.login(function(response){
+      console.log('YO FRANKIE');
+      location.reload();
+    }, {scope: 'public_profile, read_stream, publish_actions  '});
+  }
+
+
 </script>
 
 <!--
@@ -109,8 +120,10 @@
   the FB.login() function when clicked.
 -->
 
-<fb:login-button scope="public_profile, read_stream, publish_actions, read_mailbox" onlogin="checkLoginState();">
-</fb:login-button>
+<!-- <fb:login-button scope="public_profile, read_stream, publish_actions, read_mailbox" onlogin="checkLoginState();">
+</fb:login-button> -->
+
+<button onClick="LOLCATZ();">The button</button>
 
 <h1 id="status">
 </h1>

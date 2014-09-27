@@ -1,9 +1,11 @@
 'use strict';
 var keypress = require('keypress'),
-    open = require('open'),
     inquirer = require('inquirer'),
     chalk = require('chalk'),
-    Promise = require('es6-promise').Promise;
+    spawn = require('child_process').spawn,
+    Promise = require('es6-promise').Promise,
+    open = require('open');
+
 var fb;
 // listen for the "keypress" event
 
@@ -15,7 +17,6 @@ var httpRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|
 /**
  * Gets the number of columns and rows in current terminal window
  */
-var spawn = require('child_process').spawn;
 function getTermSize(cb){
     var cols, lines;
     spawn('tput', ['cols']).stdout.on('data', function(data){
@@ -50,7 +51,7 @@ var manage_keys = function (ch, key) {
   if (key && key.name == 'space') {
 	fb.nextNews()
 		.then(print_newsfeed_item)
-		.catch(console.error)
+		.catch(console.error);
 	return;
   }
 
@@ -81,13 +82,6 @@ var manage_keys = function (ch, key) {
 
     console.log('gotta like', lastitem.id ,'!');
     fb.like(lastitem.id);
-
-    return;
-  }
-
-  // View likes
-  if (key && lastitem && key.name == 'v') {
-    console.log('gotta show likes for', lastitem.id ,'.');
 
     return;
   }
@@ -148,7 +142,7 @@ function print_newsfeed_item (news) {
 	lastitem = news;
 
 
-	console.log(chalk.bgCyan(chalk.black(news.from.name)) + ':\n')
+	console.log(chalk.bgCyan(chalk.black(news.from.name)) + ':\n');
 
 	if (news.story) console.log(news.story + '\n');
 	if (news.message){
@@ -161,9 +155,7 @@ function print_newsfeed_item (news) {
 		
 	} 
 	if (news.type === 'link') {
-
-		console.log(msg+ '\n');
-
+		console.log(msg + '\n');
 	}
 
 
@@ -188,12 +180,12 @@ function print_newsfeed_item (news) {
 
 	// Build the action bar at the bottom.
 	var action_bar = '';
-	if (news.link) action_bar    = action_bar + '(o) open ' ;
-  if (news.like) action_bar    = action_bar + '(o) open ' ;
-  if (news.message) action_bar = action_bar + '(l) like this ';
-
-	action_bar = action_bar + '(p) post ';
-	console.log(action_bar);
+	if (news.link)     action_bar = action_bar + '(o) open ' ;
+  if (news.likes)    action_bar = action_bar + '(l) like ' ;
+  if (news.comments) action_bar = action_bar + '(c) comment ';
+                     action_bar = action_bar + '(p) post ';
+	
+  console.log(action_bar);
 }
 
 
@@ -208,7 +200,7 @@ function init () {
     // Log first newsfeed thingy.
     fb.nextNews()
         .then(print_newsfeed_item)
-        .catch(console.error)
+        .catch(console.error);
     
     // Set up the key catching
     keypress(process.stdin);
@@ -241,14 +233,14 @@ var dothismadness = function () {
     } catch (e) {
       console.log('Looks like you have to login.');
       var hack = require('./server');
-      return hack.showLogin();
+      return hack.showLogin().then(init).catch(console.trace);
     }
 
-    resolve({})
+    resolve({});
   });
 };
 
-var good = dothismadness()
+dothismadness()
     .then(init)
     .catch(console.trace);
 
