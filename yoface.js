@@ -73,6 +73,20 @@ module.exports = (function () {
 		})
 	};
 
+	YoFace.prototype.post = function(message) {
+		fb.api(
+		    "/me/feed",
+		    "POST",
+		    {
+		        "message": "IF THIS WORKS IM GONNA JUMP."
+		    },
+		    function (response) {
+		      if (response && !response.error) {
+		        console.log(response)
+		      }
+		    }
+		);
+	};
 
 
 	YoFace.prototype.like = function(postID) {
@@ -125,7 +139,7 @@ module.exports = (function () {
 
 	//}
 
-	};
+	
 
 	return new YoFace(fb);
 

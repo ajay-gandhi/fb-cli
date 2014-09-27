@@ -54,20 +54,22 @@ var manage_keys = function (ch, key) {
   }
 
   if (key && key.name == 'p') {
-  	process.stdin.setRawMode(false);
-  	text = true;
+  	process.stdin.setRawMode(false); text = true;
 
   	var question = {
   		type : 'input',
   		name : 'post',
   		message : 'Whats on your mind?'
   	}
+
   	inquirer.prompt([question], function( answers ) {
-  		console.log('got to post', answers.post);
-  		text = false;
+  		console.log('Posted', answers.post + "!");
+      
+      fb.post(answers.post);
+  		
+      text = false;
   		process.stdin.setRawMode(true);
   		process.stdin.resume();
-
   	});
     return
   }
