@@ -11,6 +11,29 @@ var text = false;
 var httpRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
 
 
+/**
+ * Gets the number of columns and rows in current terminal window
+ */
+var spawn = require('child_process').spawn
+function getTermSize(cb){
+    var cols, lines
+    spawn('tput', ['cols']).stdout.on('data', function(data){
+        cols = Number(data)
+        if (cols && lines && cb)
+            cb(cols, lines)
+    })
+    spawn('tput', ['lines']).stdout.on('data', function(data){
+        lines = Number(data)
+        if (cols && lines && cb)
+            cb(cols, lines)
+    })
+}
+var cols, lines;
+getTermSize(function(c, l) {
+  cols = c;
+  lines = l;
+});
+
 
 /**
  * Binds character input. Called whenever a key is pressed.
@@ -105,7 +128,11 @@ var manage_keys = function (ch, key) {
  * @param  {Newsfeeed item} news
  */
 function print_newsfeed_item (news) {
-	console.log(chalk.cyan("--------------------------------------------"));
+  var separator = "";
+  for (var i = 0; i < cols; i++) {
+    separator += "-";
+  }
+	console.log(chalk.cyan(separator));
 	//nice sugar
 	
 
