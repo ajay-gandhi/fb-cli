@@ -37,6 +37,20 @@ var manage_keys = function (ch, key) {
     return
   }
 
+  // Comment.
+  if (key && lastitem && key.name == 'c') {
+    var askComment = [{
+      type: "input",
+      name: "comment",
+      message: "What do you want to say?"
+    }];
+    var commentMessage;
+    inquirer.prompt(askComment, function(answer) {
+      commentMessage = answer.comment;
+    });
+    fb.comment(lastitem.id, commentMessage);
+  }
+
   // Like.
   if (key && lastitem && key.name == 'l') {
 
@@ -148,9 +162,9 @@ function print_newsfeed_item (news) {
 	var action_bar = ""
 	if (news.link) action_bar = action_bar + "(o) open " ;
     if (news.like) action_bar = action_bar + "(o) open " ;
-    if (news.message) action_bar = action_bar + "(l) like this";
+    if (news.message) action_bar = action_bar + "(l) like this ";
 
-	action_bar = action_bar + "(p) post " 
+	action_bar = action_bar + "(p) post "
 	console.log(action_bar);
 }
 

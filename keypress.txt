@@ -1,5 +1,0 @@
-{ name: 'd',
-  ctrl: true,
-  meta: false,
-  shift: false,
-  sequence: '\u0004' }
