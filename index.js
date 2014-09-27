@@ -117,8 +117,8 @@ function print_newsfeed_item (news) {
 
 	// Build the action bar at the bottom.
 	var action_bar = ""
-	if (news.link) action_bar = action_bar + "(o) open " 
-  if (news.like) action_bar = action_bar + "(o) open " 
+	if (news.link) action_bar = action_bar + "(o) open link " 
+  if (news.likes) action_bar = action_bar + "(l) like " 
 
 	action_bar = action_bar + "(p) post " 
 	console.log(action_bar);
@@ -146,6 +146,8 @@ function init () {
     // Yay!
     console.log('News Feed!');
     console.log('----------\n');
+    console.log('loading...\n');
+
 }
 
 
