@@ -1,6 +1,5 @@
 var Promise = require('es6-promise').Promise;
 var utils = require('./utils');
-var Ascii = require('ascii');
 var Facebook = require('facebook-node-sdk');
 
 
