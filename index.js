@@ -188,52 +188,7 @@ var textmode = function (tm) {
   }
 };
 
-///////////////////////////////////// Init /////////////////////////////////////
-
-var YoFace = require('./yoface');
-
-/**
- * Inits the whole system
- */
-function init(FB) {
-  fb = new YoFace(FB);
-
-  printer.newsfeed_title();
-
-  // Log first newsfeed thingy
-  fb.nextNews()
-      // Save for user interaction
-      .then(function (news) {
-        lastitem = news;
-        return lastitem;
-      })
-      // Print
-      .then(printer.print_newsfeed_item)
-      .catch(console.error);
-  
-  // Start catching keypresses
-  keypress(process.stdin);
-  process.stdin.on('keypress', manage_keys);
-  process.stdin.setRawMode(true);
-  process.stdin.resume();
-}
-
-var loginstuff = require('./login');
-
-/**
- * Checks if the user has to login first, then inits.
- * Or as Kevin says:
- *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
- * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
- */
-var doThisMadness = function () {
-  printer.clear();
-  printer.print_falafel();
-  loginstuff.login()
-    .then(init)
-    .catch(console.trace);
-};
-
+////////////////////////////// Commandline tools. //////////////////////////////
 
 var program = require('commander');
 var falafel = require('./package.json')
@@ -256,8 +211,51 @@ if (program.post) {
   });
 } 
 
+///////////////////////////////////// Init /////////////////////////////////////
+
+var YoFace = require('./yoface');
+var loginstuff = require('./login');
+
+/**
+ * Inits the whole system
+ */
+function initInteractive(FB) {
+  printer.clear();
+  printer.print_falafel();
+
+  fb = new YoFace(FB);
+
+  printer.newsfeed_title();
+
+  // Log first newsfeed thingy
+  fb.nextNews()
+      // Save for user interaction
+      .then(function (news) {
+        lastitem = news;
+        return lastitem;
+      })
+      // Print
+      .then(printer.print_newsfeed_item)
+      .catch(console.error);
+  
+  // Start catching keypresses
+  keypress(process.stdin);
+  process.stdin.on('keypress', manage_keys);
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+}
+
+/**
+ * Checks if the user has to login first, then inits.
+ * Or as Kevin says:
+ *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
+ * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
+ */
 else {
-  doThisMadness();
+  loginstuff
+    .login()
+    .then(initInteractive)
+    .catch(console.trace);
 }
 
 
