@@ -7,21 +7,22 @@ Command line utility for Facebook, for the cool kids.
 
 Make sure you have node. Then
 
-    npm install -g falafel
+    npm install -g fb-falafel
+    npm link
 
 BAM! Done.
 
 # Usage
 
-    $ falafel
+    $ facebook
 
-BAM! That's it.
+BAM! That's it. Type `--help` for a list of options.
 
 # No but acutally...
 
-Press `space` to go to the next item. Press `(h)` for help. 
+Press `[spacebar]` to go to the next item. Press `h` for help. 
 
-Press `esc` to enter command mode, and type in `help` there for command mode help.
+Press `[esc]` to enter command mode, and type in `help` there for command mode help.
 
 # FAQ
 
@@ -39,6 +40,4 @@ Yes. ~~We're working on it.~~ We got it ;)
 
 ## Can I read comments?
 
-Not yet. Working on that nao.
-
-
+Yeah of course...

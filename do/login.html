@@ -98,11 +98,11 @@ body {
     });
   }
 
-  $("#login-button").on('click', function() {
+  var logMeIn = function() {
     FB.login(function(response) {
       location.reload();
     }, {scope: 'public_profile, read_stream, publish_actions'});
-  });
+  };
 </script>
 
 <!--
@@ -114,7 +114,7 @@ body {
 <!-- <fb:login-button scope="public_profile, read_stream, publish_actions, read_mailbox" onlogin="checkLoginState();">
 </fb:login-button> -->
 
-<button id="login-button" class="btn btn-primary btn-lg">BIG FAT LOGIN BUTTON</button>
+<button onClick="logMeIn()" id="login-button" class="btn btn-primary btn-lg">BIG FAT LOGIN BUTTON</button>
 <h1 id="status"></h1>
 </body>
 </html>
