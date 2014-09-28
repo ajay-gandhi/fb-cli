@@ -129,7 +129,7 @@ var mode_comment = function () {
   inquirer.prompt(askComment, function(answer) {
     if (answer.comment !== '') {
       fb.comment(lastitem.id, answer.comment, function() {
-        console.log('posted comment.');
+        console.log('Posted comment!');
       });
     }
     textmode(false);
@@ -201,6 +201,12 @@ function init() {
 
   // Log first newsfeed thingy
   fb.nextNews()
+      // Save for user interaction
+      .then(function (news) {
+        lastitem = news;
+        return lastitem;
+      })
+      // Print
       .then(printer.print_newsfeed_item)
       .catch(console.error);
   
@@ -235,7 +241,10 @@ var doThisMadness = function () {
       // User has to login to Facebook
       console.log('Looks like you have to login.');
       var hack = require('./server');
-      return hack.showLogin().then(init).catch(reject);
+      return hack.showLogin().then(function() {
+        init();
+        process.stdout.write('\u001B[1A\u001B[2K');
+      }).catch(reject);
     }
 
     // Don't actually need to return anything
