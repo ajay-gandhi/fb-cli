@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/ajay-gandhi/fb-cli/issues"
   },
-  "homepage": "https://github.com/ajay-gandhi/fb-cli",
+  "homepage": "https://fb-falafel.ml",
   "dependencies": {
     "args": "0.0.3",
     "chalk": "^0.5.1",
