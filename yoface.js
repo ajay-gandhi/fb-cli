@@ -110,7 +110,6 @@ module.exports = (function() {
                 .catch(function() {});
             });
           }
-
           resolve(nextItem);
         }
       });
@@ -119,10 +118,10 @@ module.exports = (function() {
     /**
      * Posts a message as a status update
      * @param [string] message - The status message to post
-     * @return {boolean} Wether the message was posted
+     * @return {boolean} Whether the message was posted
      */
-    YoFace.prototype.post = function(message) {
-      if (message === '') return false;
+    YoFace.prototype.post = function(message, callback) {
+      if (message === "") return false;
       FB.api(
         '/me/feed',
         'POST', {
@@ -145,8 +144,9 @@ module.exports = (function() {
      * Likes a post
      * @param [int] postId - The ID of the post to like
      */
-    YoFace.prototype.like = function(postId) {
-      var url = '/' + postId + '/likes';
+
+    YoFace.prototype.like = function(postId, callback) {
+      var url = "/" + postId + "/likes";
       FB.api(
         url,
         'POST',
@@ -168,8 +168,9 @@ module.exports = (function() {
      * @param [int] postId - The ID of the post to comment on
      * @param [string] message - The message to post as a comment
      */
-    YoFace.prototype.comment = function(postId, message) {
-        var url = '/' + postId + '/comments';
+
+    YoFace.prototype.comment = function(postId, message, callback) {
+        var url = "/" + postId + "/comments";
 
         FB.api(
           url,

@@ -146,9 +146,9 @@ module.exports = (function () {
 	  // Build the action bar at the bottom.
 	  var action_bar = '';
 	  action_bar += fmta('p', 'post');  
-	  if (news.link)     action_bar += fmta('o', 'open');
+	  if (news.link)      action_bar += fmta('o', 'open');
 	  action_bar += fmta('l', 'like');
-	  if (news.comments) action_bar += fmta('c', 'comment');
+	  if (news.comments)  action_bar += fmta('c', 'comment');
 	  action_bar += fmta('h', 'help');
 	  console.log(action_bar + '\n');
 	};

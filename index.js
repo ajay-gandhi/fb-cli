@@ -215,7 +215,7 @@ function init() {
  *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
  * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
  */
-var dothismadness = function () {
+var doThisMadness = function () {
   return new Promise(function (resolve, reject) {
     printer.clear();
 
@@ -241,7 +241,7 @@ var dothismadness = function () {
   });
 };
 
-dothismadness()
+doThisMadness()
     .then(init)
     .catch(console.trace);
 
