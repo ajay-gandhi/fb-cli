@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-// ^ Make it executable
 
 'use strict';
 // Just some global vars
@@ -10,9 +9,10 @@ var fb,
     printer = require('./printer'),
     keypress = require('keypress');
 
-
 var lastitem = null;
 var text = false;
+
+///////////////////////////////// User Actions /////////////////////////////////
 
 /**
  * Binds character input. Called whenever a key is pressed.
@@ -22,118 +22,154 @@ var manage_keys = function (ch, key) {
   if (text) return;
 
   // Next news feed item.
-  if (key && key.name == 'space') {
-    fb.nextNews()
-      // Save for user interaction
-      .then(function(news) {
-        lastitem = news;
-        printer.print_newsfeed_item(news);
-        return lastitem;
-      })
-      .catch(console.error);
-    return;
-  }
+  if (key && key.name == 'space') { action_next(); return; }
 
   // Quit.
-  if (key && key.ctrl && key.name == 'c') {
-    // Output nyan cat and exit :)
-    printer.horizontalRule();
-    printer.nyan();
-    process.stdin.pause();
-    return;
-  }
-
-  // Comment.
-  if (key && lastitem && key.name == 'c') {
-    textmode(true);
-
-    var askComment = [{
-      type: 'input',
-      name: 'comment',
-      message: 'What do you want to say?'
-    }];
-    inquirer.prompt(askComment, function(answer) {
-      fb.comment(lastitem.id, answer.comment, function() {
-        console.log("Comment posted!");
-      });
-      textmode(false);
-    });
-    return;
-  }
+  if (key && key.ctrl && key.name == 'c') { action_close(); return; }
 
   // Like.
-  if (key && lastitem && key.name == 'l') {
-    fb.like(lastitem.id, function() {
-      console.log("Liked!");
-    });
-    return;
-  }
+  if (key && lastitem && key.name == 'l') { action_like(); return; }
 
+  // Comment.
+  if (key && lastitem && key.name == 'c') { mode_comment(); return; }
+  
   // Open in the browser
-  if (key && lastitem && key.name == 'o') {
-    open(lastitem.link);
-    return;
-  }
+  if (key && lastitem && key.name == 'o') { open(lastitem.link); return; }
 
-  // Post
-  if (key && key.name == 'p') {
-    textmode(true);
+  // Post.
+  if (key && key.name == 'p') { mode_post(); return; }
 
-    var question = [{
-      type : 'input',
-      name : 'post',
-      message : 'What\'s on your mind?'
-    }];
-
-    inquirer.prompt(question, function(answers) {
-      fb.post(answers.post, function() {
-        console.log('Posted "', answers.post + '".');
-      });
-      textmode(false);
-    });
-    return;
-  }
-
-  // Help
-  if (key && key.name == 'h') {
-    console.log('Keyboard shortcuts');
-    console.log('[spacebar] next post');
-    console.log('[p]        post new status update.');
-    console.log('[ctrl+c]   be productive again.');
-    console.log('[esc]      command mode - \'help\' in command mode for command mode help.');
-    return;
-  }
+  // Help.
+  if (key && key.name == 'h') { printer.shelp(); return; }
 
   // Command mode.
-  if (key && key.name == 'escape') {
-    textmode(true);
-
-    var q = [{ name: 'cmd', message: ':' }];
-    inquirer.prompt(q, function(a) {
-      // Return to top of newsfeed
-      if (a.cmd === 'top') {
-        // Empty news cache
-        fb.cache.news = [];
-        fb.cache.news_next = null;
-        printer.clear();
-
-        // Print next news item
-        fb.nextNews()
-          .then(printer.print_newsfeed_item)
-          .catch(console.error);
-      }
-
-      // Display commands
-      if (a.cmd === 'help') {
-        console.log('top:    return to top of newsfeed.');
-        console.log('help:   display this message.');
-      }
-
-      textmode(false);
-    });
-    return;
-  }
+  if (key && key.name == 'escape') { mode_command(); return; }
 };
+
+var manage_commands = function (cmd) {
+  
+  if (cmd === 'top')      { action_top();     return; }
+  if (cmd === 'help')     { printer.chelp();  return; }
+  if (cmd === 'post')     { mode_post();      return; }
+  if (cmd === 'like')     { mode_post();      return; }
+  if (cmd === 'comment')  { mode_comment();   return; }
+  if (cmd === 'quit')     { action_close();   return; }
+  if (cmd === 'next')     { action_next();    return; }
+
+  console.log('no command ' + cmd + '.');
+};
+
+/////////////////////////////////// Actions. ///////////////////////////////////
+
+/**
+ * Go back to the top of the newsfeed.
+ */
+var action_top = function () {
+  // Empty news cache
+  fb.cache.news = [];
+  fb.cache.news_next = null;
+  printer.clear();
+
+  // Print next news item
+  fb.nextNews()
+    .then(printer.print_newsfeed_item)
+    .catch(console.error);
+};
+
+/**
+ * Likes the last displayed post.
+ * @return {[type]} [description]
+ */
+var action_like = function () {
+  fb.like(lastitem.id);
+  console.log('Liked!');
+};
+
+/**
+ * Output nyan cat and exit :)
+ */
+var action_close = function () {
+  printer.horizontalRule();
+  printer.nyan();
+  process.stdin.pause();
+};
+
+/**
+ * Displays next newsfeed item.
+ * @return {[type]} [description]
+ */
+var action_next = function () {
+  fb.nextNews()
+    // Save for user interaction
+    .then(function (news) {
+      lastitem = news;
+      return lastitem;
+    })
+    // Print
+    .then(printer.print_newsfeed_item)
+    .catch(console.error);
+};
+
+//////////////////////////////////// Modes. ////////////////////////////////////
+
+
+/**
+ * Asks user for comment, and posts it.
+ * @return {[type]} [description]
+ */
+var mode_comment = function () {
+  textmode(true);
+
+  var askComment = [{
+    type: 'input',
+    name: 'comment',
+    message: 'What do you want to say?'
+  }];
+  inquirer.prompt(askComment, function(answer) {
+    if (answer.comment !== '') {
+      fb.comment(lastitem.id, answer.comment);
+      console.log('posted comment.');
+    }
+    textmode(false);
+  });
+};
+
+
+/**
+ * Asks user for status update, and posts it.
+ * @return {[type]} [description]
+ */
+var mode_post = function () {
+  textmode(true);
+
+  var question = [{
+    type : 'input',
+    name : 'post',
+    message : 'What\'s on your mind?'
+  }];
+
+  inquirer.prompt(question, function(answers) {
+    if (fb.post(answers.post)) {
+      console.log('Posted: ', answers.post);
+    }
+    textmode(false);
+  });
+};
+
+/**
+ * Asks user for commands, and executes them.
+ * @return {[type]} [description]
+ */
+var mode_command = function () {
+  textmode(true);
+
+  var q = [{ name: 'cmd', message: ':' }];
+  inquirer.prompt(q, function(a) {
+    manage_commands(a.cmd);
+    textmode(false);
+  });
+};
+
 
 /**
  * Enables textmode, so we can input strings of characters.
@@ -149,6 +185,9 @@ var textmode = function (tm) {
     process.stdin.resume();
   }
 };
+
+///////////////////////////////////// Init /////////////////////////////////////
+
 
 /**
  * Inits the whole system
