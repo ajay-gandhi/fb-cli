@@ -241,10 +241,7 @@ var doThisMadness = function () {
       // User has to login to Facebook
       console.log('Looks like you have to login.');
       var hack = require('./server');
-      return hack.showLogin().then(function() {
-        init();
-        process.stdout.write('\u001B[1A\u001B[2K');
-      }).catch(reject);
+      return hack.showLogin().then(init).catch(reject);
     }
 
     // Don't actually need to return anything
