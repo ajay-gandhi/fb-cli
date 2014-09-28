@@ -56,7 +56,7 @@ var manage_commands = function (cmd) {
   if (cmd === 'quit')     { action_close();   return; }
   if (cmd === 'next')     { action_next();    return; }
 
-  console.log('no command ' + cmd + '.');
+  console.log('No command `' + cmd + '`.');
 };
 
 /////////////////////////////////// Actions. ///////////////////////////////////
