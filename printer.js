@@ -88,7 +88,8 @@ module.exports = (function () {
      * Prints help for keyboard shortcuts
      */
     Printer.prototype.shelp = function() {
-        console.log('Keyboard shortcuts');
+        horizontalRule();
+	console.log('Keyboard shortcuts');
         console.log('[spacebar] next post');
         console.log('[p]        post new status update');
         console.log('[esc]      command mode - \'help\' in command mode for command mode help');
