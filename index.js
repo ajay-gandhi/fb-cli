@@ -56,7 +56,7 @@ var manage_commands = function (cmd) {
   if (cmd === 'quit')     { action_close();   return; }
   if (cmd === 'next')     { action_next();    return; }
 
-  console.log('no command ' + cmd + '.');
+  console.log('No command `' + cmd + '`.');
 };
 
 /////////////////////////////////// Actions. ///////////////////////////////////
@@ -234,7 +234,6 @@ var doThisMadness = function () {
     .catch(console.trace);
 };
 
-
 var program = require('commander');
 var falafel = require('./package.json')
 program
@@ -242,7 +241,7 @@ program
   .option('-p, --post <status>', 'Post a status update')
 
   // Append some extra stuff to help.
-  .on('--help', function(){
+  .on('--help', function() {
     console.log('Calling with no arguments starts interactive newsfeed.\n');
   })
 
@@ -254,9 +253,7 @@ if (program.post) {
   require('./yoface.js').post(program.post, function () {
     console.log('Posted.');
   });
-} 
-
-else {
+} else {
   doThisMadness();
 }
 

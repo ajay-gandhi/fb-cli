@@ -119,7 +119,6 @@ module.exports = (function() {
      * Likes a post
      * @param [int] postId - The ID of the post to like
      */
-
     YoFace.prototype.like = function(postId, callback) {
       var url = '/' + postId + '/likes';
       this.FB.api(
@@ -143,7 +142,6 @@ module.exports = (function() {
      * @param [int] postId - The ID of the post to comment on
      * @param [string] message - The message to post as a comment
      */
-
     YoFace.prototype.comment = function(postId, message, callback) {
         var url = '/' + postId + '/comments';
 
@@ -153,7 +151,7 @@ module.exports = (function() {
             'message': message
           },
           function(response) {
-            if (response.result.error) {
+            if (response && response.result && response.result.error) {
               if (response.result.error.type == 'OAuthException') {
                 console.log('You don\'t have permission to comment on that post' +
                   ' - did you give me permission to post for you?');
