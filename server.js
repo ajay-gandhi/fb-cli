@@ -1,18 +1,3 @@
-
-// var express = require('express');
-// var app = express();
-
-// app.get('/hello.txt', function(req, res){
-//   res.send('Hello World');
-// });
-
-
-// app.use(express.static(__dirname + '/do'));
-
-// var server = app.listen(3000, function() {
-//     console.log('Listening on port %d', server.address().port);
-// });
-
 'use strict';
 
 var http = require('http'),
