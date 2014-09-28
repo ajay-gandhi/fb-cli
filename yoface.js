@@ -52,7 +52,7 @@ module.exports = (function () {
 		return new Promise(function (resolve, reject) {
 			
 			if (self.cache.news.length === 0) {
-				console.log('loading...');
+				console.log('Loading...');
 				var feed_url = self.cache.news_next ? self.cache.news_next : '/me/home';
 
 				FB.api(feed_url, function(err, res) {
@@ -67,14 +67,16 @@ module.exports = (function () {
 					// Download image and convert to ascii
           var url = nextItem.picture;
 
-          fileUtils.delete('cache.jpg', function(error) {
-            console.log(error);
-          });
-          fileUtils.download(url, 'cache.jpg', function() {
-            ascii('cache.jpg')
-              .then(function(output) { console.log(output); })
-              .catch(function() {});
-          });
+          if (url != undefined) {
+            fileUtils.delete('cache.jpg', function(error) {
+              console.log(error);
+            });
+            fileUtils.download(url, 'cache.jpg', function() {
+              ascii('cache.jpg')
+                .then(function(output) { console.log(output); })
+                .catch(function() {});
+            });
+          }
 
 			  	resolve(nextItem);
 				});
@@ -84,14 +86,16 @@ module.exports = (function () {
         // Download image and convert to ascii
         var url = nextItem.picture;
 
-        fileUtils.delete('cache.jpg', function(error) {
-          console.log(error);
-        });
-        fileUtils.download(url, 'cache.jpg', function() {
-          ascii('cache.jpg')
-            .then(function(output) { console.log(output); })
-            .catch(function() {});
-        });
+        if (url != undefined) {
+          fileUtils.delete('cache.jpg', function(error) {
+            console.log(error);
+          });
+          fileUtils.download(url, 'cache.jpg', function() {
+            ascii('cache.jpg')
+              .then(function(output) { console.log(output); })
+              .catch(function() {});
+          });
+        }
 
 				resolve(nextItem);
 			}
