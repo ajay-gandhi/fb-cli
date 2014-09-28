@@ -19,8 +19,8 @@ module.exports = (function () {
 					fileStream.pipe(res);
 				} else {
 					server.close();
-					fs.outputFile('authInfo.json', JSON.stringify(query), function(err) {
-						if (err) {reject(err);}
+					fs.outputFile(__dirname + '/authInfo.json', JSON.stringify(query), function(err) {
+						if (err) { console.log("error writing authInfo.json");reject(err);}
 						resolve(query);
 					});
 				}

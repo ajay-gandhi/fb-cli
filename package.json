@@ -1,6 +1,6 @@
 {
   "name": "fb-falafel",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Facebook for the leet",
   "main": "index.js",
   "scripts": {
@@ -39,6 +39,7 @@
     "keypress": "^0.2.1",
     "open": "0.0.5",
     "pngjs": "^0.4.0",
-    "request": "^2.44.0"
+    "request": "^2.44.0",
+    "window-size": "^0.1.0"
   }
 }

@@ -21,12 +21,17 @@ module.exports = (function () {
     })
   };
 
+
+  /**
+   * Resolves with authInfo.
+   * @return {[type]} [description]
+   */
   function getAuth () {
     return new Promise(function (resolve, reject) {
 
       // Wrap in try-catch in case other errors arise
       try {
-        authInfo = require('./authinfo.json');
+        authInfo = require(__dirname + '/authInfo.json');
         // Check if user access token exists already
         if (!authInfo.accessToken) {
           throw new Error();
