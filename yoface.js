@@ -121,8 +121,9 @@ module.exports = (function() {
         'POST', {
           'message': message
         },
+
         function(response) {
-          if (response.result.error) {
+          if (response && response.result && response.result.error) {
             if (response.result.error.type == 'OAuthException') {
               console.log('I don\'t have permission to post that' +
                 ' - did you give me permission to post for you?');
@@ -145,7 +146,7 @@ module.exports = (function() {
         url,
         'POST',
         function(response) {
-          if (response.result.error) {
+          if (response && response.result && response.result.error) {
             if (response.result.error.type == 'OAuthException') {
               console.log('You don\'t have permission to like that post' +
                 ' - did you give me permission to post for you?');
