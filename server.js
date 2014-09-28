@@ -1,12 +1,10 @@
 'use strict';
-
 var http = require('http'),
     fs = require('fs-extra'),
     url = require('url'),
     Promise = require('es6-promise').Promise;
 
 module.exports = (function () {
-	
 	function WebHack () {}
 
 	WebHack.prototype.showLogin = function() {
