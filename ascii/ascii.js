@@ -1,16 +1,8 @@
 'use strict';
 var Promise = require('es6-promise').Promise,
+    sizeOf = require('image-size'),
     exec = require('child_process').exec,
     ImageToAscii = require ('./ascii_module');
-
-var asciiConverter = new ImageToAscii({
-  resize: {
-    height: '50%',
-    width:  '50%'
-  },
-  multiplyWidth: 2,
-  colored: true
-});
 
 module.exports = function(file) {
   return new Promise(function (resolve, reject) {
@@ -20,6 +12,26 @@ module.exports = function(file) {
       if (error !== null) {
         reject(error);
       } else {
+        // See if image is portrait or landscape
+        var dimensions = sizeOf(file);
+        var resizeObject;
+        if (dimensions.height > dimensions.width) {
+          resizeObject = {
+            height: '50%',
+            width: '25%'
+          }
+        } else {
+          resizeObject = {
+            height: '50%',
+            width: '50%'
+          }
+        }
+
+        var asciiConverter = new ImageToAscii({
+          resize: resizeObject,
+          multiplyWidth: 2,
+          colored: true
+        });
         // Asciify image
         asciiConverter.convert("./" + filename + ".png", function(err, converted) {
           if (err) {
