@@ -1,4 +1,4 @@
-Falafel
+Facebook Falafel
 ============
 
 Command line utility for Facebook, for the cool kids.
@@ -8,7 +8,6 @@ Command line utility for Facebook, for the cool kids.
 Make sure you have node. Then
 
     npm install -g fb-falafel
-    npm link
 
 BAM! Done.
 
@@ -16,7 +15,7 @@ BAM! Done.
 
     $ facebook
 
-BAM! That's it. Type `--help` for a list of options.
+BAM! That's it. Use the `--help` parameter for a list of options. Or just run it. Yeah.
 
 # No but acutally...
 
