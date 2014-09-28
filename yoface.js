@@ -55,7 +55,6 @@ module.exports = (function() {
 
           // Query Graph API
           FB.api(feed_url, function(err, res) {
-
             if (err) reject(err);
 
             // Add next page to the cache, for later

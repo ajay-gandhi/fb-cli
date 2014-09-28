@@ -81,8 +81,9 @@ var action_top = function () {
  * @return {[type]} [description]
  */
 var action_like = function () {
-  fb.like(lastitem.id);
-  console.log('Liked!');
+  fb.like(lastitem.id, function() {
+    console.log('Liked!');
+  });
 };
 
 /**
@@ -127,8 +128,9 @@ var mode_comment = function () {
   }];
   inquirer.prompt(askComment, function(answer) {
     if (answer.comment !== '') {
-      fb.comment(lastitem.id, answer.comment);
-      console.log('posted comment.');
+      fb.comment(lastitem.id, answer.comment, function() {
+        console.log('Posted comment!');
+      });
     }
     textmode(false);
   });
@@ -149,9 +151,9 @@ var mode_post = function () {
   }];
 
   inquirer.prompt(question, function(answers) {
-    if (fb.post(answers.post)) {
+    fb.post(answers.post, function() {
       console.log('Posted: ', answers.post);
-    }
+    });
     textmode(false);
   });
 };
@@ -199,6 +201,12 @@ function init() {
 
   // Log first newsfeed thingy
   fb.nextNews()
+      // Save for user interaction
+      .then(function (news) {
+        lastitem = news;
+        return lastitem;
+      })
+      // Print
       .then(printer.print_newsfeed_item)
       .catch(console.error);
   
