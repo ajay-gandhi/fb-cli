@@ -15,19 +15,14 @@ module.exports = (function() {
      *     app secret, and access token
      * @returns [Facebook] An instance of the Facebook API
      */
-    function ActualFacebook(cfg) {
-        createFB = function(appId, secret, token) {
-            return new Facebook({
-                appID: appId,
-                secret: secret
-            }).setAccessToken(token);
-        };
+     var createFB = function(appId, secret, token) {
+         return new Facebook({
+             appID: appId,
+             secret: secret
+         }).setAccessToken(token);
+     };
 
-        return fb = createFB(cfg.appID, cfg.secret, cfg.accessToken);
-    }
-
-    config.accessToken = authInfo.accessToken;
-    var FB = new ActualFacebook(config);
+    var FB = createFB(config.appID, config.secret, authInfo.accessToken);
 
     /**
      * Initializes yo facebook object, dawg.
@@ -121,7 +116,7 @@ module.exports = (function() {
      * @return {boolean} Whether the message was posted
      */
     YoFace.prototype.post = function(message, callback) {
-      if (message === "") return false;
+      if (message === '') return false;
       FB.api(
         '/me/feed',
         'POST', {
@@ -146,7 +141,7 @@ module.exports = (function() {
      */
 
     YoFace.prototype.like = function(postId, callback) {
-      var url = "/" + postId + "/likes";
+      var url = '/' + postId + '/likes';
       FB.api(
         url,
         'POST',
@@ -170,7 +165,7 @@ module.exports = (function() {
      */
 
     YoFace.prototype.comment = function(postId, message, callback) {
-        var url = "/" + postId + "/comments";
+        var url = '/' + postId + '/comments';
 
         FB.api(
           url,
