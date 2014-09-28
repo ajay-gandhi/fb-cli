@@ -16,7 +16,7 @@ BAM! Done.
 
     $ facebook
 
-BAM! That's it. Type `--help` for a list of options.
+BAM! That's it. Press `h` for a list of options.
 
 # No but acutally...
 
@@ -37,7 +37,3 @@ Yes. We know.
 ## No but acutally, pictures as ASCII art.
 
 Yes. ~~We're working on it.~~ We got it ;)
-
-## Can I read comments?
-
-Yeah of course...
