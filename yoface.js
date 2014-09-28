@@ -81,6 +81,7 @@ module.exports = (function () {
 	};
 
 	YoFace.prototype.post = function(message) {
+		if (message === "") return;
 		FB.api(
 		    "/me/feed",
 		    "POST",
