@@ -3,67 +3,19 @@
 
 'use strict';
 // Just some global vars
-var fb, httpRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
-var keypress = require('keypress'),
+var fb,
     inquirer = require('inquirer'),
-    chalk = require('chalk'),
-    spawn = require('child_process').spawn,
     Promise = require('es6-promise').Promise,
-    open = require('open');
-    
+    open = require('open'),
+    printer = require('./printer'),
+    keypress = require('keypress');
 
-var appname = 
-"    ___     _        __      _  \n"+
-"   / __\\_ _| | __ _ / _| ___| | \n"+
-"  / _\\/ _` | |/ _` | |_ / _ \\ | \n"+
-" / / | (_| | | (_| |  _|  __/ | \n"+
-" \\/   \\__,_|_|\\__,_|_|  \\___|_| \n"+
-"                  " + chalk.blue("for facebook\n");
-
-var nyan = 
-"+      o     +              o     \n"+
-"    +             o     +       + \n"+
-"o          +                      \n"+
-"    o  +           +        +     \n"+
-"+        o     o       +        o \n"+
-"-_-_-_-_-_-_-_,------,      o     \n"+
-"_-_-_-_-_-_-_-|   /\\_/\\           \n"+
-"-_-_-_-_-_-_-~|__( ^ .^)  +     + \n"+
-"_-_-_-_-_-_-_-\"\"  \"\"              \n"+
-"+      o         o   +       o    \n"+
-"    +         +                   \n"+
-"o        o         o      o     + \n"+
-"    o           +                 \n"+
-"+      +     o        o bye  +    \n";
-
-/**
- * Clears the screen and places the cursor at the top left
- */
-function clear() {
-  process.stdout.write('\u001B[2J\u001B[0;0f');
-}
-
-/**
- * Outputs a full-width horizontal rule
- */
-function horizontalRule() {
-  // Create full-width separator
-  var size = require('window-size');
-  var separator = '';
-  for (var i = 0; i < size.width; i++) {
-    separator += '─';
-  }
-  console.log(chalk.cyan(separator));
-}
 
 var lastitem = null;
 var text = false;
 
 /**
  * Binds character input. Called whenever a key is pressed.
- * @param  {[type]} ch  [description]
- * @param  {[type]} key [description]
- * @return {[type]}     [description]
  */
 var manage_keys = function (ch, key) {
   // Were inputting text, so don't do anything else.
@@ -72,7 +24,13 @@ var manage_keys = function (ch, key) {
   // Next news feed item.
   if (key && key.name == 'space') {
     fb.nextNews()
-      .then(print_newsfeed_item)
+      // Save for user interaction
+      .then(function (news) {
+        lastitem = news;
+        return lastitem;
+      })
+      // Print
+      .then(printer.print_newsfeed_item)
       .catch(console.error);
     return;
   }
@@ -80,8 +38,8 @@ var manage_keys = function (ch, key) {
   // Quit.
   if (key && key.ctrl && key.name == 'c') {
     // Output nyan cat and exit :)
-    horizontalRule();
-    console.log(nyan);
+    printer.horizontalRule();
+    printer.nyan();
     process.stdin.pause();
     return;
   }
@@ -95,7 +53,6 @@ var manage_keys = function (ch, key) {
       name: 'comment',
       message: 'What do you want to say?'
     }];
-    var commentMessage;
     inquirer.prompt(askComment, function(answer) {
       fb.comment(lastitem.id, answer.comment, function() {
         console.log("Comment posted!");
@@ -140,9 +97,11 @@ var manage_keys = function (ch, key) {
 
   // Help
   if (key && key.name == 'h') {
+    console.log('Keyboard shortcuts');
     console.log('[spacebar] next post');
-    console.log('[esc]      command mode - \'help\' in command mode for command mode help.')
-    console.log('[p]        post new status update')
+    console.log('[p]        post new status update.');
+    console.log('[ctrl+c]   be productive again.');
+    console.log('[esc]      command mode - \'help\' in command mode for command mode help.');
     return;
   }
 
@@ -157,11 +116,11 @@ var manage_keys = function (ch, key) {
         // Empty news cache
         fb.cache.news = [];
         fb.cache.news_next = null;
-        clear();
+        printer.clear();
 
         // Print next news item
         fb.nextNews()
-          .then(print_newsfeed_item)
+          .then(printer.print_newsfeed_item)
           .catch(console.error);
 
       }
@@ -191,74 +150,7 @@ var textmode = function (tm) {
     text = false;
     process.stdin.resume();
   }
-}
-
-
-/**
- * Prints a newsfeed item.
- * @param  {Newsfeeed item} news
- */
-function print_newsfeed_item (news) {
-  horizontalRule();
-
-  // Save item in case user wants to interact with it.
-  lastitem = news;
-
-  // Whose post is it
-  console.log(chalk.bgCyan(chalk.black(news.from.name)) + ':\n');
-
-  if (news.story) console.log(news.story + '\n');
-  if (news.message){
-    var msg = news.message;
-    // Identify links
-    var matches = msg.match(httpRegex);
-    if (matches) {
-      msg = msg.replace(matches[0],chalk.cyan(chalk.underline(matches[0])));
-    }
-    console.log(msg + '\n');
-    
-  }
-
-  // Build the "# of likes" message 
-  var others_msg = '';
-  if (news.likes) {
-    others_msg += news.likes.data.length;
-    // Add a + if there are lots
-    if (news.likes.paging.next) others_msg += '+';
-    others_msg += ' likes.  ';
-  }
-
-  // Build the "# of comments" message
-  if (news.comments) {
-    others_msg += news.comments.data.length;
-    // Add a + if there are lots
-    if (news.comments.paging.next) others_msg += '+';
-    others_msg += ' comments.';
-  }
-
-  // Post likes and comments.
-  if (others_msg !== '') console.log(others_msg,'\n');
-
-
-  // Build the action bar at the bottom.
-  var action_bar = '';
-  if (news.link)     action_bar += fmta('o', 'open');
-  if (news.likes)    action_bar += fmta('l', 'like');
-  if (news.comments) action_bar += fmta('c', 'comment');
-  action_bar += fmta('h', 'help');
-  console.log(action_bar + '\n');
-}
-
-/**
- * Formats an action for display
- * @param [char] key - The keyboard key that activates the command
- * @param [string] title - The name of the command
- */
-function fmta (key, title) {
-  return chalk.dim('(' + key + ') ') + title + ' ';
-}
-
-
+};
 
 /**
  * Inits the whole system
@@ -266,13 +158,11 @@ function fmta (key, title) {
 function init() {
   fb = require('./yoface.js');
 
-  // Yay!
-  console.log(' News Feed!');
-  console.log('>──────────>\n');
+  printer.newsfeed_title();
 
   // Log first newsfeed thingy
   fb.nextNews()
-      .then(print_newsfeed_item)
+      .then(printer.print_newsfeed_item)
       .catch(console.error);
   
   // Start catching keypresses
@@ -282,8 +172,6 @@ function init() {
   process.stdin.resume();
 }
 
-
-
 /**
  * Checks if the user has to login first, then inits.
  * Or as Kevin says:
@@ -292,10 +180,10 @@ function init() {
  */
 var dothismadness = function () {
   return new Promise(function (resolve, reject) {
-    clear();
+    printer.clear();
 
     // Falafel ftw
-    console.log(appname);
+    printer.print_falafel();
 
     // Wrap in try-catch in case other errors arise
     try {
@@ -319,3 +207,4 @@ var dothismadness = function () {
 dothismadness()
     .then(init)
     .catch(console.trace);
+
