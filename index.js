@@ -97,7 +97,9 @@ var manage_keys = function (ch, key) {
     }];
     var commentMessage;
     inquirer.prompt(askComment, function(answer) {
-      fb.comment(lastitem.id, answer.comment);
+      fb.comment(lastitem.id, answer.comment, function() {
+        console.log("Comment posted!");
+      });
       textmode(false);
     });
     return;
@@ -105,8 +107,9 @@ var manage_keys = function (ch, key) {
 
   // Like.
   if (key && lastitem && key.name == 'l') {
-    fb.like(lastitem.id);
-    console.log('Liked!');
+    fb.like(lastitem.id, function() {
+      console.log("Liked!");
+    });
     return;
   }
 
@@ -127,8 +130,9 @@ var manage_keys = function (ch, key) {
     }];
 
     inquirer.prompt(question, function(answers) {
-      fb.post(answers.post);
-      console.log('Posted "', answers.post + '".');
+      fb.post(answers.post, function() {
+        console.log('Posted "', answers.post + '".');
+      });
       textmode(false);
     });
     return;

@@ -113,7 +113,7 @@ module.exports = (function () {
    * Posts a message as a status update
    * @param [string] message - The status message to post
    */
-	YoFace.prototype.post = function(message) {
+	YoFace.prototype.post = function(message, callback) {
 		FB.api(
 		    "/me/feed",
 		    "POST",
@@ -121,47 +121,38 @@ module.exports = (function () {
 		        "message": message
 		    },
 		    function (response) {
-		      if (response && !response.error) {
-		        console.log(response);
-		      }
+		      if (response.result.error) {
+            if (response.result.error.type == "OAuthException") {
+              console.log("I don't have permission to post that" +
+                " - did you give me permission to post for you?");
+            }
+          } else {
+            callback();
+          }
 		    }
 		);
-	};
-
-  /**
-   * This isn't even used...guess it's for listing friends?
-   */
-	YoFace.prototype.query_friends = function(first_argument) {
-		return new Promise (function (resolve, reject) {
-  		if (self.cache.news.length === 0) {				
-  			FB.api(
-          '/me/home',
-          function(err, res) {
-  				if (err) reject(err);
-  			  	self.cache.news = res.data;
-  			  	resolve(self.cache.news.shift())
-  			  }
-        );
-  		}	else {
-  			resolve(self.cache.news.shift())
-  		}
-		});
 	};
 
   /**
    * Likes a post
    * @param [int] postId - The ID of the post to like
    */
-	YoFace.prototype.like = function(postId) {
+	YoFace.prototype.like = function(postId, callback) {
 		var url = "/" + postId + "/likes";
 		FB.api(
       url,
       "POST",
 			function(response) {
-				if (response && !response.error) {
-					console.log(response);
-      	}	
-			});
+				if (response.result.error) {
+          if (response.result.error.type == "OAuthException") {
+            console.log("You don't have permission to like that post" +
+              " - did you give me permission to post for you?");
+          }
+      	}	else {
+          callback();
+        }
+			}
+    );
 	};
 
   /**
@@ -169,7 +160,7 @@ module.exports = (function () {
    * @param [int] postId - The ID of the post to comment on
    * @param [string] message - The message to post as a comment
    */
-	YoFace.prototype.comment = function(postId, message) {
+	YoFace.prototype.comment = function(postId, message, callback) {
 		var url = "/" + postId + "/comments";
 
 		FB.api(
@@ -177,9 +168,14 @@ module.exports = (function () {
       "POST",
 			{ "message": message },
 			function (response) {
-				if (response && !response.error) {
-					console.log(response);
-				}
+				if (response.result.error) {
+          if (response.result.error.type == "OAuthException") {
+            console.log("You don't have permission to comment on that post" +
+              " - did you give me permission to post for you?");
+          }
+        } else {
+          callback();
+        }
 			}
 		);
 	}
