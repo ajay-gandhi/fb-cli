@@ -204,13 +204,6 @@ program
   .parse(process.argv);
 
 
-// Post straight up.
-if (program.post) {
-  require('./yoface.js').post(program.post, function () {
-    console.log('Posted.');
-  });
-} 
-
 ///////////////////////////////////// Init /////////////////////////////////////
 
 var YoFace = require('./yoface');
@@ -244,6 +237,15 @@ function initInteractive(FB) {
   process.stdin.setRawMode(true);
   process.stdin.resume();
 }
+
+/////////////////////////////////// Startup. ///////////////////////////////////
+
+// Post straight up.
+if (program.post) {
+  require('./yoface.js').post(program.post, function () {
+    console.log('Posted.');
+  });
+} 
 
 /**
  * Checks if the user has to login first, then inits.
