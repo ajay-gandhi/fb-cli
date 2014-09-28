@@ -10,9 +10,8 @@ body {
 }
 </style>
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-</head>
-<body>
 <script>
+$(document).ready(function() {
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
     console.log('statusChangeCallback:');
@@ -97,23 +96,16 @@ body {
     });
   }
 
-  var logMeIn = function() {
+  $("#login-button").click(function() {
     FB.login(function(response) {
       location.reload();
     }, {scope: 'public_profile, read_stream, publish_actions'});
-  };
+  });
+});
 </script>
-
-<!--
-  Below we include the Login Button social plugin. This button uses
-  the JavaScript SDK to present a graphical Login button that triggers
-  the FB.login() function when clicked.
--->
-
-<!-- <fb:login-button scope="public_profile, read_stream, publish_actions, read_mailbox" onlogin="checkLoginState();">
-</fb:login-button> -->
-
-<button onClick="logMeIn()" id="login-button" class="btn btn-primary btn-lg">BIG FAT LOGIN BUTTON</button>
+</head>
+<body>
+<button id="login-button" class="btn btn-primary btn-lg">BIG FAT LOGIN BUTTON</button>
 <h1 id="status"></h1>
 </body>
 </html>
