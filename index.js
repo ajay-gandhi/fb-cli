@@ -13,6 +13,7 @@ var fb,
 
 var lastitem = null;
 var text = false;
+var allowedActions = [];
 
 /**
  * Binds character input. Called whenever a key is pressed.
@@ -30,7 +31,10 @@ var manage_keys = function (ch, key) {
         return lastitem;
       })
       // Print
-      .then(printer.print_newsfeed_item)
+      .then(function(newsfeedItem) {
+        printer.print_newsfeed_item(newsfeedItem);
+        allowedActions = newsfeedItem.availableActions;
+      )
       .catch(console.error);
     return;
   }
@@ -45,7 +49,7 @@ var manage_keys = function (ch, key) {
   }
 
   // Comment.
-  if (key && lastitem && key.name == 'c') {
+  if (key && lastitem && key.name == 'c' && allowedActions.indexOf('c') != -1) {
     textmode(true);
 
     var askComment = [{
@@ -71,7 +75,7 @@ var manage_keys = function (ch, key) {
   }
 
   // Open in the browser
-  if (key && lastitem && key.name == 'o') {
+  if (key && lastitem && key.name == 'o' && allowedActions.indexOf('o') != -1) {
     open(lastitem.link);
     return;
   }
@@ -162,7 +166,10 @@ function init() {
 
   // Log first newsfeed thingy
   fb.nextNews()
-      .then(printer.print_newsfeed_item)
+      .then(function(newsfeedItem) {
+        printer.print_newsfeed_item(newsfeedItem);
+        allowedActions = newsfeedItem.availableActions;
+      )
       .catch(console.error);
   
   // Start catching keypresses
@@ -178,7 +185,7 @@ function init() {
  *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
  * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
  */
-var dothismadness = function () {
+var doThisMadness = function () {
   return new Promise(function (resolve, reject) {
     printer.clear();
 
@@ -204,7 +211,7 @@ var dothismadness = function () {
   });
 };
 
-dothismadness()
+doThisMadness()
     .then(init)
     .catch(console.trace);
 

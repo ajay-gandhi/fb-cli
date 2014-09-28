@@ -111,6 +111,10 @@ module.exports = (function() {
             });
           }
 
+          var availableActions = [];
+          if (nextItem.link)     availableActions.push('o');
+          if (nextItem.comments) availableActions.push('c');
+          nextItem.availableActions = availableActions;
           resolve(nextItem);
         }
       });
@@ -119,7 +123,7 @@ module.exports = (function() {
     /**
      * Posts a message as a status update
      * @param [string] message - The status message to post
-     * @return {boolean} Wether the message was posted
+     * @return {boolean} Whether the message was posted
      */
     YoFace.prototype.post = function(message) {
       if (message === "") return false;
