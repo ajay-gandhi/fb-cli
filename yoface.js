@@ -47,73 +47,73 @@ module.exports = (function() {
      * @return {[type]} [description]
      */
     YoFace.prototype.nextNews = function() {
-        var self = this;
+      var self = this;
 
-        return new Promise(function(resolve, reject) {
+      return new Promise(function(resolve, reject) {
 
-            // Check if there is anything in the newsfeed cache
-            if (self.cache.news.length === 0) {
+        // Check if there is anything in the newsfeed cache
+        if (self.cache.news.length === 0) {
 
-                // If cache is empty, load new items
-                console.log('Loading...');
-                var feed_url = self.cache.news_next ? self.cache.news_next : '/me/home';
+          // If cache is empty, load new items
+          console.log('Loading...');
+          var feed_url = self.cache.news_next ? self.cache.news_next : '/me/home';
 
-                // Query Graph API
-                FB.api(feed_url, function(err, res) {
+          // Query Graph API
+          FB.api(feed_url, function(err, res) {
 
-                    if (err) reject(err);
+            if (err) reject(err);
 
-                    // Add next page to the cache, for later
-                    if (res.paging.next) self.cache.news_next = res.paging.next;
-                    // Store current page of items
-                    self.cache.news = res.data;
-                    var nextItem = self.cache.news.shift();
+            // Add next page to the cache, for later
+            if (res.paging.next) self.cache.news_next = res.paging.next;
+            // Store current page of items
+            self.cache.news = res.data;
+            var nextItem = self.cache.news.shift();
 
-                    // Remove the loading indicator
-                    process.stdout.write('\u001B[1A\u001B[2K');
+            // Remove the loading indicator
+            process.stdout.write('\u001B[1A\u001B[2K');
 
-                    var url = nextItem.picture;
+            var url = nextItem.picture;
 
-                    if (url != undefined) {
-                        // Delete old image
-                        fileUtils.delete('cache.jpg', function(error) {
-                            console.log(error);
-                        });
-                        // Download new image and asciify
-                        fileUtils.download(url, 'cache.jpg', function() {
-                            ascii('cache.jpg')
-                                .then(function(output) {
-                                    console.log(output);
-                                })
-                                .catch(function() {});
-                        });
-                    }
-
-                    resolve(nextItem);
-                });
-            } else {
-                var nextItem = self.cache.news.shift();
-
-                var url = nextItem.picture;
-
-                if (url != undefined) {
-                    // Delete old image
-                    fileUtils.delete('cache.jpg', function(error) {
-                        console.log(error);
-                    });
-                    // Download new image and asciify
-                    fileUtils.download(url, 'cache.jpg', function() {
-                        ascii('cache.jpg')
-                            .then(function(output) {
-                                console.log(output);
-                            })
-                            .catch(function() {});
-                    });
-                }
-
-                resolve(nextItem);
+            if (url != undefined) {
+              // Delete old image
+              fileUtils.delete('cache.jpg', function(error) {
+                console.log(error);
+              });
+              // Download new image and asciify
+              fileUtils.download(url, 'cache.jpg', function() {
+                ascii('cache.jpg')
+                  .then(function(output) {
+                    console.log(output);
+                  })
+                  .catch(function() {});
+              });
             }
-        });
+
+            resolve(nextItem);
+          });
+        } else {
+          var nextItem = self.cache.news.shift();
+
+          var url = nextItem.picture;
+
+          if (url != undefined) {
+            // Delete old image
+            fileUtils.delete('cache.jpg', function(error) {
+                console.log(error);
+            });
+            // Download new image and asciify
+            fileUtils.download(url, 'cache.jpg', function() {
+              ascii('cache.jpg')
+                .then(function(output) {
+                    console.log(output);
+                })
+                .catch(function() {});
+            });
+          }
+
+          resolve(nextItem);
+        }
+      });
     };
 
     /**
@@ -122,40 +122,23 @@ module.exports = (function() {
      * @return {boolean} Wether the message was posted
      */
     YoFace.prototype.post = function(message) {
-        if (message === "") return false;
-        FB.api(
-            "/me/feed",
-            "POST", {
-                "message": message
-            },
-            function(response) {
-                if (response && !response.error) {
-                    return true;
-                } else {
-                    return false;
-                }
+      if (message === "") return false;
+      FB.api(
+        "/me/feed",
+        "POST", {
+          "message": message
+        },
+        function(response) {
+          if (response.result.error) {
+            if (response.result.error.type == "OAuthException") {
+              console.log("I don't have permission to post that" +
+                " - did you give me permission to post for you?");
             }
-        );
-    };
-
-    /**
-     * This isn't even used...guess it's for listing friends?
-     */
-    YoFace.prototype.query_friends = function(first_argument) {
-        return new Promise(function(resolve, reject) {
-            if (self.cache.news.length === 0) {
-                FB.api(
-                    '/me/home',
-                    function(err, res) {
-                        if (err) reject(err);
-                        self.cache.news = res.data;
-                        resolve(self.cache.news.shift())
-                    }
-                );
-            } else {
-                resolve(self.cache.news.shift())
-            }
-        });
+          } else {
+            callback();
+          }
+        }
+      );
     };
 
     /**
@@ -163,15 +146,21 @@ module.exports = (function() {
      * @param [int] postId - The ID of the post to like
      */
     YoFace.prototype.like = function(postId) {
-        var url = "/" + postId + "/likes";
-        FB.api(
-            url,
-            "POST",
-            function(response) {
-                if (response && !response.error) {
-                    console.log(response);
-                }
-            });
+      var url = "/" + postId + "/likes";
+      FB.api(
+        url,
+        "POST",
+        function(response) {
+          if (response.result.error) {
+            if (response.result.error.type == "OAuthException") {
+              console.log("You don't have permission to like that post" +
+                " - did you give me permission to post for you?");
+            }
+          } else {
+            callback();
+          }
+        }
+      );
     };
 
     /**
@@ -183,15 +172,20 @@ module.exports = (function() {
         var url = "/" + postId + "/comments";
 
         FB.api(
-            url,
-            "POST", {
-                "message": message
-            },
-            function(response) {
-                if (response && !response.error) {
-                    console.log(response);
-                }
+          url,
+          "POST", {
+            "message": message
+          },
+          function(response) {
+            if (response.result.error) {
+              if (response.result.error.type == "OAuthException") {
+                console.log("You don't have permission to comment on that post" +
+                  " - did you give me permission to post for you?");
+              }
+            } else {
+              callback();
             }
+          }
         );
     }
 
