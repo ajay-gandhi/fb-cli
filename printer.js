@@ -88,22 +88,23 @@ module.exports = (function () {
      * Prints help for keyboard shortcuts
      */
     Printer.prototype.shelp = function() {
-        console.log('Keyboard shortcuts');
+        horizontalRule();
+	console.log('Keyboard shortcuts');
         console.log('[spacebar] next post');
-        console.log('[p]        post new status update.');
-        console.log('[esc]      command mode - \'help\' in command mode for command mode help.');
-        console.log('[h]        display this message.');
-        console.log('[ctrl+c]   be productive again.');
+        console.log('[p]        post new status update');
+        console.log('[esc]      command mode - \'help\' in command mode for command mode help');
+        console.log('[h]        display this message');
+        console.log('[ctrl+c]   be productive again');
     };
 
     Printer.prototype.chelp = function() {
-        console.log('top:       return to top of newsfeed.');
-        console.log('post:      post status update.');
-        console.log('like:      like last newsfeed post.');
-        console.log('comment:   post comment on last newsfeed post.');
-        console.log('next:      next newsfeed post.');
-        console.log('help:      display this message.');
-        console.log('quit:      close falafel.');
+        console.log('top:       return to top of newsfeed');
+        console.log('post:      post status update');
+        console.log('like:      like last newsfeed post');
+        console.log('comment:   post comment on last newsfeed post');
+        console.log('next:      next newsfeed post');
+        console.log('help:      display this message');
+        console.log('quit:      close falafel');
     };
 
     /**
