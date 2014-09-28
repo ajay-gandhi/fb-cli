@@ -1,37 +1,51 @@
 'use strict';
-var sys = require('sys');
-var exec = require('child_process').exec;
-var ImageToAscii = require ('./ascii_module');
+var Promise = require('es6-promise').Promise,
+    sizeOf = require('image-size'),
+    exec = require('child_process').exec,
+    ImageToAscii = require ('./ascii_module');
 
-var asciiConverter = new ImageToAscii ({
-  resize: {
-    height: '50%',
-    width:  '50%'
-  },
-  multiplyWidth: 2,
-  colored: true
-});
-
-module.exports.asciify = function(file) {
-  var filename = file.substring(0, file.lastIndexOf('.'));
-  // Convert image to png
-  var convertImg = exec('convert ' + file + ' ' + filename + '.png', function (error) {
-    if (error !== null) {
-      return 'Error converting image: ' + error;
-    } else {
-      var output;
-      // Asciify image
-      asciiConverter.convert('./' + filename + '.png', function(err, converted) {
-        if (err) {
-          output = 'Error displaying image: ' + err;
+module.exports = function(file) {
+  return new Promise(function (resolve, reject) {
+    var filename = file.substring(0, file.lastIndexOf('.'));
+    // Convert image to png
+    var convertImg = exec("convert " + file + " " + filename + ".png", function (error) {
+      if (error !== null) {
+        reject(error);
+      } else {
+        // See if image is portrait or landscape
+        var dimensions = sizeOf(file);
+        var resizeObject;
+        if (dimensions.height > dimensions.width) {
+          resizeObject = {
+            height: '50%',
+            width: '25%'
+          }
         } else {
-          // Output the ascii!
-          output = converted;
+          resizeObject = {
+            height: '50%',
+            width: '50%'
+          }
         }
-        // Delete the converted image
-        exec('rm ' + filename + '.png');
-        return output;
-      });
-    }
+
+        var asciiConverter = new ImageToAscii({
+          resize: resizeObject,
+          multiplyWidth: 2,
+          colored: true
+        });
+        // Asciify image
+        asciiConverter.convert("./" + filename + ".png", function(err, converted) {
+          if (err) {
+            // Delete the converted file
+            exec("rm " + filename + ".png");
+            reject(err);
+          } else {
+            // Delete the converted file
+            exec("rm " + filename + ".png");
+            // Output the ascii!
+            resolve(converted);
+          }
+        });
+      }
+    });
   });
 }

@@ -83,14 +83,14 @@ function convertToPng (options, callback) {
         if (err) { return callback (err); }
 
         // build the resize options
-        resizeOptions = processResize.call (self, options.resize) || (imageData.width + "x" + imageData.height);
+        var resizeOptions = processResize.call(self, options.resize) || (imageData.width + "x" + imageData.height);
 
         // convert the image
         ImageMagick.convert([
-            options.imagePath
-          , '-resize'
-          , resizeOptions
-          , tmpPath
+            options.imagePath,
+            '-resize',
+            resizeOptions,
+            tmpPath
         ], function(err, stdout){
 
             // handle error
@@ -138,7 +138,7 @@ var ImageToAscii = function (options) {
 
     // use 'new'
     if (this.constructor !== ImageToAscii) {
-        throw new Error ('Use 'new' keyword to create the ImageToAscii instance');
+        throw new Error ('Use \'new\' keyword to create the ImageToAscii instance');
     }
 
     // force options to be an object
@@ -147,9 +147,8 @@ var ImageToAscii = function (options) {
     options.multiplyWidth = Number (options.multiplyWidth) || 2;
 
     // globals
-    var precision = 1020 / (options.pixels.length - 1)
-      , asciiPixels = options.pixels
-      ;
+    var precision = 1020 / (options.pixels.length - 1),
+        asciiPixels = options.pixels;
 
     // reverse pixels
     if (options.reverse) {
