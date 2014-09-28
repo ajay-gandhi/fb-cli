@@ -48,16 +48,16 @@ var manage_keys = function (ch, key) {
 
 var manage_commands = function (cmd) {
   
-  if (a.cmd === 'top')      { action_top();     return; }
-  if (a.cmd === 'help')     { printer.chelp();  return; }
-  if (a.cmd === 'post')     { mode_post();      return; }
-  if (a.cmd === 'like')     { mode_post();      return; }
-  if (a.cmd === 'comment')  { mode_comment();   return; }
-  if (a.cmd === 'quit')     { action_close();   return; }
-  if (a.cmd === 'next')     { action_next();    return; }
+  if (cmd === 'top')      { action_top();     return; }
+  if (cmd === 'help')     { printer.chelp();  return; }
+  if (cmd === 'post')     { mode_post();      return; }
+  if (cmd === 'like')     { mode_post();      return; }
+  if (cmd === 'comment')  { mode_comment();   return; }
+  if (cmd === 'quit')     { action_close();   return; }
+  if (cmd === 'next')     { action_next();    return; }
 
-  console.log('no command ' + a.cmd + '.');
-}
+  console.log('no command ' + cmd + '.');
+};
 
 /////////////////////////////////// Actions. ///////////////////////////////////
 
@@ -74,7 +74,7 @@ var action_top = function () {
   fb.nextNews()
     .then(printer.print_newsfeed_item)
     .catch(console.error);
-}
+};
 
 /**
  * Likes the last displayed post.
@@ -83,7 +83,7 @@ var action_top = function () {
 var action_like = function () {
   fb.like(lastitem.id);
   console.log('Liked!');
-}
+};
 
 /**
  * Output nyan cat and exit :)
@@ -92,7 +92,7 @@ var action_close = function () {
   printer.horizontalRule();
   printer.nyan();
   process.stdin.pause();
-}
+};
 
 /**
  * Displays next newsfeed item.
@@ -108,7 +108,7 @@ var action_next = function () {
     // Print
     .then(printer.print_newsfeed_item)
     .catch(console.error);
-}
+};
 
 //////////////////////////////////// Modes. ////////////////////////////////////
 
@@ -132,7 +132,7 @@ var mode_comment = function () {
     }
     textmode(false);
   });
-}
+};
 
 
 /**
@@ -151,10 +151,10 @@ var mode_post = function () {
   inquirer.prompt(question, function(answers) {
     if (fb.post(answers.post)) {
       console.log('Posted: ', answers.post);
-    };
+    }
     textmode(false);
   });
-}
+};
 
 /**
  * Asks user for commands, and executes them.
@@ -168,7 +168,7 @@ var mode_command = function () {
     manage_commands(a.cmd);
     textmode(false);
   });
-}
+};
 
 
 /**
