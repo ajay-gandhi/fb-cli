@@ -14,6 +14,7 @@ module.exports = (function () {
 		console.log('>──────────>\n');
 	};
 
+
 	/**
 	 * Print full-width separator
 	 */
@@ -27,6 +28,7 @@ module.exports = (function () {
 	};
 	Printer.prototype.horizontalRule = horizontalRule;
 
+
 	/**
 	 * Clears the screen and places the cursor at the top left
 	 */
@@ -34,6 +36,7 @@ module.exports = (function () {
 	  process.stdout.write('\u001B[2J\u001B[0;0f');
 	}
 	Printer.prototype.clear = clear;
+
 
 	/**
 	 * Formats an action for display
@@ -59,6 +62,7 @@ module.exports = (function () {
 		'                  ' + chalk.blue('for facebook\n'));
 	};
 
+
 	/**
 	 * Print nyan cat! YAYAYAYYAYAYYYAYYAYAYAYNANANNANANANNNANANAN
 	 */
@@ -78,6 +82,22 @@ module.exports = (function () {
 		'o        o         o      o     + \n'+
 		'    o           +                 \n'+
 		'+      +     o        o bye  +    \n');
+	};
+
+	/**
+	 * Prints help for keyboard shortcuts
+	 */
+	Printer.prototype.shelp = function() {
+		console.log('Keyboard shortcuts');
+		console.log('[spacebar] next post');
+		console.log('[p]        post new status update.');
+		console.log('[ctrl+c]   be productive again.');
+		console.log('[esc]      command mode - \'help\' in command mode for command mode help.');
+	};
+
+	Printer.prototype.chelp = function() {
+		console.log('top:    return to top of newsfeed.');
+		console.log('help:   display this message.');
 	};
 
 	/**
