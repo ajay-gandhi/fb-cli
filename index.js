@@ -241,7 +241,34 @@ var doThisMadness = function () {
   });
 };
 
-doThisMadness()
-    .then(init)
-    .catch(console.trace);
+
+
+var program = require('commander');
+var falafel = require('./package.json')
+program
+  .version(falafel.version)
+  .option('-p, --post <status>', 'Post a status update')
+
+  // Append some extra stuff to help.
+  .on('--help', function(){
+    console.log('Calling with no arguments starts interactive newsfeed.\n');
+  })
+
+  .parse(process.argv);
+
+if (program.post) {
+  require('./yoface.js').post(program.post, function () {
+    console.log('Posted.');
+  });
+} else {
+  doThisMadness()
+      .then(init)
+      .catch(console.trace);
+}
+
+
+
+
+
+
 
