@@ -95,8 +95,9 @@ module.exports = (function() {
      * @return {boolean} Whether the message was posted
      */
     YoFace.prototype.post = function(message, callback) {
+      var self = this;
       if (message === '') return false;
-      this.FB.api(
+      self.FB.api(
         '/me/feed',
         'POST', {
           'message': message
@@ -120,8 +121,9 @@ module.exports = (function() {
      * @param [int] postId - The ID of the post to like
      */
     YoFace.prototype.like = function(postId, callback) {
+      var self = this;
       var url = '/' + postId + '/likes';
-      this.FB.api(
+      self.FB.api(
         url,
         'POST',
         function(response) {
@@ -143,24 +145,25 @@ module.exports = (function() {
      * @param [string] message - The message to post as a comment
      */
     YoFace.prototype.comment = function(postId, message, callback) {
-        var url = '/' + postId + '/comments';
+      var self = this;
+      var url = '/' + postId + '/comments';
 
-        this.FB.api(
-          url,
-          'POST', {
-            'message': message
-          },
-          function(response) {
-            if (response && response.result && response.result.error) {
-              if (response.result.error.type == 'OAuthException') {
-                console.log('You don\'t have permission to comment on that post' +
-                  ' - did you give me permission to post for you?');
-              }
-            } else {
-              callback();
+      self.FB.api(
+        url,
+        'POST', {
+          'message': message
+        },
+        function(response) {
+          if (response && response.result && response.result.error) {
+            if (response.result.error.type == 'OAuthException') {
+              console.log('You don\'t have permission to comment on that post' +
+                ' - did you give me permission to post for you?');
             }
+          } else {
+            callback();
           }
-        );
+        }
+      );
     };
 
     return YoFace;
