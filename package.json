@@ -1,6 +1,6 @@
 {
   "name": "fb-falafel",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Facebook for the leet",
   "main": "index.js",
   "scripts": {
