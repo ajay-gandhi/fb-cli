@@ -253,43 +253,11 @@ if (program.post) {
  *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
  * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
  */
-<<<<<<< HEAD
-var doThisMadness = function () {
-  printer.clear();
-  printer.print_falafel();
-  loginstuff.login()
-    .then(init)
-    .catch(console.trace);
-};
-
-var program = require('commander');
-var falafel = require('./package.json')
-program
-  .version(falafel.version)
-  .option('-p, --post <status>', 'Post a status update')
-
-  // Append some extra stuff to help.
-  .on('--help', function() {
-    console.log('Calling with no arguments starts interactive newsfeed.\n');
-  })
-
-  .parse(process.argv);
-
-
-// Post straight up.
-if (program.post) {
-  require('./yoface.js').post(program.post, function () {
-    console.log('Posted.');
-  });
-} else {
-  doThisMadness();
-=======
 else {
   loginstuff
     .login()
     .then(initInteractive)
     .catch(console.trace);
->>>>>>> 817e2ba9ee2edec945978c4f4be4bfd605d44a3a
 }
 
 
