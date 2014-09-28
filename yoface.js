@@ -102,10 +102,11 @@ module.exports = (function () {
               .then(function(output) { console.log(output); })
               .catch(function() {});
           });
+        }
 
 				resolve(nextItem);
 			}
-		})
+		});
 	};
 
   /**

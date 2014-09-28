@@ -18,7 +18,7 @@ var appname =
 "  / _\\/ _` | |/ _` | |_ / _ \\ | \n"+
 " / / | (_| | | (_| |  _|  __/ | \n"+
 " \\/   \\__,_|_|\\__,_|_|  \\___|_| \n"+
-"                  " + chalk.blue("for facebook\n")
+"                  " + chalk.blue("for facebook\n");
 
 var nyan = 
 "+      o     +              o     \n"+
@@ -34,13 +34,26 @@ var nyan =
 "    +         +                   \n"+
 "o        o         o      o     + \n"+
 "    o           +                 \n"+
-"+      +     o        o bye  +    \n"
+"+      +     o        o bye  +    \n";
 
 /**
  * Clears the screen and places the cursor at the top left
  */
-function clear () {
+function clear() {
   process.stdout.write('\u001B[2J\u001B[0;0f');
+}
+
+/**
+ * Outputs a full-width horizontal rule
+ */
+function horizontalRule() {
+  // Create full-width separator
+  var size = require('window-size');
+  var separator = '';
+  for (var i = 0; i < size.width; i++) {
+    separator += '─';
+  }
+  console.log(chalk.cyan(separator));
 }
 
 var lastitem = null;
@@ -67,6 +80,7 @@ var manage_keys = function (ch, key) {
   // Quit.
   if (key && key.ctrl && key.name == 'c') {
     // Output nyan cat and exit :)
+    horizontalRule();
     console.log(nyan);
     process.stdin.pause();
     return;
@@ -181,13 +195,7 @@ var textmode = function (tm) {
  * @param  {Newsfeeed item} news
  */
 function print_newsfeed_item (news) {
-  // Create full-width separator
-  var size = require('window-size');
-  var separator = '';
-  for (var i = 0; i < size.width; i++) {
-    separator += '─';
-  }
-  console.log(chalk.cyan(separator));
+  horizontalRule();
 
   // Save item in case user wants to interact with it.
   lastitem = news;
