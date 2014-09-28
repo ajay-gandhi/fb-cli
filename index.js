@@ -13,7 +13,6 @@ var fb,
 
 var lastitem = null;
 var text = false;
-var allowedActions = [];
 
 /**
  * Binds character input. Called whenever a key is pressed.
@@ -26,15 +25,11 @@ var manage_keys = function (ch, key) {
   if (key && key.name == 'space') {
     fb.nextNews()
       // Save for user interaction
-      .then(function (news) {
+      .then(function(news) {
         lastitem = news;
+        printer.print_newsfeed_item(news);
         return lastitem;
       })
-      // Print
-      .then(function(newsfeedItem) {
-        printer.print_newsfeed_item(newsfeedItem);
-        allowedActions = newsfeedItem.availableActions;
-      )
       .catch(console.error);
     return;
   }
@@ -49,7 +44,7 @@ var manage_keys = function (ch, key) {
   }
 
   // Comment.
-  if (key && lastitem && key.name == 'c' && allowedActions.indexOf('c') != -1) {
+  if (key && lastitem && key.name == 'c') {
     textmode(true);
 
     var askComment = [{
@@ -75,7 +70,7 @@ var manage_keys = function (ch, key) {
   }
 
   // Open in the browser
-  if (key && lastitem && key.name == 'o' && allowedActions.indexOf('o') != -1) {
+  if (key && lastitem && key.name == 'o') {
     open(lastitem.link);
     return;
   }
@@ -126,7 +121,6 @@ var manage_keys = function (ch, key) {
         fb.nextNews()
           .then(printer.print_newsfeed_item)
           .catch(console.error);
-
       }
 
       // Display commands
@@ -166,10 +160,7 @@ function init() {
 
   // Log first newsfeed thingy
   fb.nextNews()
-      .then(function(newsfeedItem) {
-        printer.print_newsfeed_item(newsfeedItem);
-        allowedActions = newsfeedItem.availableActions;
-      )
+      .then(printer.print_newsfeed_item)
       .catch(console.error);
   
   // Start catching keypresses
