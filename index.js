@@ -188,14 +188,41 @@ var textmode = function (tm) {
   }
 };
 
+////////////////////////////// Commandline tools. //////////////////////////////
+
+var program = require('commander');
+var falafel = require('./package.json')
+program
+  .version(falafel.version)
+  .option('-p, --post <status>', 'Post a status update')
+
+  // Append some extra stuff to help.
+  .on('--help', function(){
+    console.log('Calling with no arguments starts interactive newsfeed.\n');
+  })
+
+  .parse(process.argv);
+
+
+// Post straight up.
+if (program.post) {
+  require('./yoface.js').post(program.post, function () {
+    console.log('Posted.');
+  });
+} 
+
 ///////////////////////////////////// Init /////////////////////////////////////
 
 var YoFace = require('./yoface');
+var loginstuff = require('./login');
 
 /**
  * Inits the whole system
  */
-function init(FB) {
+function initInteractive(FB) {
+  printer.clear();
+  printer.print_falafel();
+
   fb = new YoFace(FB);
 
   printer.newsfeed_title();
@@ -218,14 +245,13 @@ function init(FB) {
   process.stdin.resume();
 }
 
-var loginstuff = require('./login');
-
 /**
  * Checks if the user has to login first, then inits.
  * Or as Kevin says:
  *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
  * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
  */
+<<<<<<< HEAD
 var doThisMadness = function () {
   printer.clear();
   printer.print_falafel();
@@ -255,6 +281,13 @@ if (program.post) {
   });
 } else {
   doThisMadness();
+=======
+else {
+  loginstuff
+    .login()
+    .then(initInteractive)
+    .catch(console.trace);
+>>>>>>> 817e2ba9ee2edec945978c4f4be4bfd605d44a3a
 }
 
 
