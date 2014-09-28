@@ -242,10 +242,15 @@ function initInteractive(FB) {
 
 // Post straight up.
 if (program.post) {
-  require('./yoface.js').post(program.post, function () {
-    console.log('Posted.');
-  });
-} 
+  loginstuff
+    .login()
+    .then(function (FB) {
+      fb = new YoFace(FB);
+      fb.post(program.post, function () {
+          console.log('Posted.');
+        });
+    });
+}
 
 /**
  * Checks if the user has to login first, then inits.
