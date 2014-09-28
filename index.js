@@ -11,6 +11,7 @@ var fb,
 
 var lastitem = null;
 var text = false;
+var allowedActions = [];
 
 ///////////////////////////////// User Actions /////////////////////////////////
 
@@ -31,10 +32,10 @@ var manage_keys = function (ch, key) {
   if (key && lastitem && key.name == 'l') { action_like(); return; }
 
   // Comment.
-  if (key && lastitem && key.name == 'c') { mode_comment(); return; }
+  if (key && lastitem && key.name == 'c' && allowedActions.indexOf('c') != -1) { mode_comment(); return; }
   
   // Open in the browser
-  if (key && lastitem && key.name == 'o') { open(lastitem.link); return; }
+  if (key && lastitem && key.name == 'o' && allowedActions.indexOf('o') != -1) { open(lastitem.link); return; }
 
   // Post.
   if (key && key.name == 'p') { mode_post(); return; }
@@ -72,7 +73,10 @@ var action_top = function () {
 
   // Print next news item
   fb.nextNews()
-    .then(printer.print_newsfeed_item)
+    .then(function(news) {
+      printer.print_newsfeed_item(news);
+      allowedActions = news.allowedActions;
+    })
     .catch(console.error);
 };
 
@@ -104,6 +108,7 @@ var action_next = function () {
     // Save for user interaction
     .then(function (news) {
       lastitem = news;
+      allowedActions = lastitem.allowedActions;
       return lastitem;
     })
     // Print
@@ -228,7 +233,10 @@ function initInteractive(FB) {
         return lastitem;
       })
       // Print
-      .then(printer.print_newsfeed_item)
+      .then(function(news) {
+        printer.print_newsfeed_item(news);
+        allowedActions = news.allowedActions;
+      })
       .catch(console.error);
   
   // Start catching keypresses

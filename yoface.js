@@ -63,6 +63,10 @@ module.exports = (function() {
               });
             }
 
+            var allowedActions = [];
+            if (nextItem.link)      allowedActions.push('o');
+            if (nextItem.comments)  allowedActions.push('c');
+            nextItem.allowedActions = allowedActions;
             resolve(nextItem);
           });
         } else {
@@ -84,6 +88,11 @@ module.exports = (function() {
                 .catch(function() {});
             });
           }
+
+          var allowedActions = [];
+          if (nextItem.link)      allowedActions.push('o');
+          if (nextItem.comments)  allowedActions.push('c');
+          nextItem.allowedActions = allowedActions;
           resolve(nextItem);
         }
       });
