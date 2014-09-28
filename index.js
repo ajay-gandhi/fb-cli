@@ -190,12 +190,13 @@ var textmode = function (tm) {
 
 ///////////////////////////////////// Init /////////////////////////////////////
 
+var YoFace = require('./yoface');
 
 /**
  * Inits the whole system
  */
-function init() {
-  fb = require('./yoface.js');
+function init(FB) {
+  fb = new YoFace(FB);
 
   printer.newsfeed_title();
 
@@ -217,6 +218,8 @@ function init() {
   process.stdin.resume();
 }
 
+var loginstuff = require('./login');
+
 /**
  * Checks if the user has to login first, then inits.
  * Or as Kevin says:
@@ -224,31 +227,12 @@ function init() {
  * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
  */
 var doThisMadness = function () {
-  return new Promise(function (resolve, reject) {
-    printer.clear();
-
-    // Falafel ftw
-    printer.print_falafel();
-
-    // Wrap in try-catch in case other errors arise
-    try {
-      var authInfo = require('./authInfo');
-      // Check if user access token exists already
-      if (!authInfo.accessToken) {
-        throw new Error();
-      }
-    } catch (e) {
-      // User has to login to Facebook
-      console.log('Looks like you have to login.');
-      var hack = require('./server');
-      return hack.showLogin().then(init).catch(reject);
-    }
-
-    // Don't actually need to return anything
-    resolve({});
-  });
+  printer.clear();
+  printer.print_falafel();
+  loginstuff.login()
+    .then(init)
+    .catch(console.trace);
 };
-
 
 
 var program = require('commander');
@@ -264,14 +248,16 @@ program
 
   .parse(process.argv);
 
+
+// Post straight up.
 if (program.post) {
   require('./yoface.js').post(program.post, function () {
     console.log('Posted.');
   });
-} else {
-  doThisMadness()
-      .then(init)
-      .catch(console.trace);
+} 
+
+else {
+  doThisMadness();
 }
 
 

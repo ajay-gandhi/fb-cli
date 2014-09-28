@@ -1,29 +1,9 @@
 'use strict';
 var Promise = require('es6-promise').Promise,
-    Facebook = require('facebook-node-sdk'),
     fileUtils = require('./file_utils.js'),
     ascii = require('./ascii/ascii.js');
 
 module.exports = (function() {
-
-    var config = require('./config.json');
-    var authInfo = require('./authInfo.json');
-
-    /**
-     * Creates a Facebook API object
-     * @param [object] cfg - A config object containing a Facebook appID,
-     *     app secret, and access token
-     * @returns [Facebook] An instance of the Facebook API
-     */
-     var createFB = function(appId, secret, token) {
-         return new Facebook({
-             appID: appId,
-             secret: secret
-         }).setAccessToken(token);
-     };
-
-    var FB = createFB(config.appID, config.secret, authInfo.accessToken);
-
     /**
      * Initializes yo facebook object, dawg.
      * @param {[type]} fb [description]
@@ -54,7 +34,7 @@ module.exports = (function() {
           var feed_url = self.cache.news_next ? self.cache.news_next : '/me/home';
 
           // Query Graph API
-          FB.api(feed_url, function(err, res) {
+          self.FB.api(feed_url, function(err, res) {
             if (err) reject(err);
 
             // Add next page to the cache, for later
@@ -116,7 +96,7 @@ module.exports = (function() {
      */
     YoFace.prototype.post = function(message, callback) {
       if (message === '') return false;
-      FB.api(
+      this.FB.api(
         '/me/feed',
         'POST', {
           'message': message
@@ -142,7 +122,7 @@ module.exports = (function() {
 
     YoFace.prototype.like = function(postId, callback) {
       var url = '/' + postId + '/likes';
-      FB.api(
+      this.FB.api(
         url,
         'POST',
         function(response) {
@@ -167,7 +147,7 @@ module.exports = (function() {
     YoFace.prototype.comment = function(postId, message, callback) {
         var url = '/' + postId + '/comments';
 
-        FB.api(
+        this.FB.api(
           url,
           'POST', {
             'message': message
@@ -185,5 +165,5 @@ module.exports = (function() {
         );
     };
 
-    return new YoFace(FB);
+    return YoFace;
 })();
