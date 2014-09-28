@@ -33,12 +33,12 @@ Because it's cool.
 
 Yes. We know.
 
-## No but acutally. ASCII art.
+## No but acutally, pictures as ASCII art.
 
-Yes. We're working on it.
+Yes. ~~We're working on it.~~ We got it ;)
 
 ## Can I read comments?
 
-Not yet. Working on that too.
+Not yet. Working on that nao.
 
 

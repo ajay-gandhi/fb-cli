@@ -1,7 +1,7 @@
+'use strict';
 var Promise = require('es6-promise').Promise,
     Facebook = require('facebook-node-sdk'),
     fileUtils = require('./file_utils.js'),
-    readline = require('readline'),
     ascii = require('./ascii/ascii.js');
 
 module.exports = (function() {
@@ -39,7 +39,7 @@ module.exports = (function() {
         this.cache = {
             news: [],
             news_next: null
-        }
+        };
     }
 
     /**
@@ -74,7 +74,7 @@ module.exports = (function() {
 
             var url = nextItem.picture;
 
-            if (url != undefined) {
+            if (url !== undefined) {
               // Delete old image
               fileUtils.delete('cache.jpg', function(error) {
                 console.log(error);
@@ -96,7 +96,7 @@ module.exports = (function() {
 
           var url = nextItem.picture;
 
-          if (url != undefined) {
+          if (url !== undefined) {
             // Delete old image
             fileUtils.delete('cache.jpg', function(error) {
                 console.log(error);
@@ -122,17 +122,17 @@ module.exports = (function() {
      * @return {boolean} Wether the message was posted
      */
     YoFace.prototype.post = function(message) {
-      if (message === "") return false;
+      if (message === '') return false;
       FB.api(
-        "/me/feed",
-        "POST", {
-          "message": message
+        '/me/feed',
+        'POST', {
+          'message': message
         },
         function(response) {
           if (response.result.error) {
-            if (response.result.error.type == "OAuthException") {
-              console.log("I don't have permission to post that" +
-                " - did you give me permission to post for you?");
+            if (response.result.error.type == 'OAuthException') {
+              console.log('I don\'t have permission to post that' +
+                ' - did you give me permission to post for you?');
             }
           } else {
             callback();
@@ -146,15 +146,15 @@ module.exports = (function() {
      * @param [int] postId - The ID of the post to like
      */
     YoFace.prototype.like = function(postId) {
-      var url = "/" + postId + "/likes";
+      var url = '/' + postId + '/likes';
       FB.api(
         url,
-        "POST",
+        'POST',
         function(response) {
           if (response.result.error) {
-            if (response.result.error.type == "OAuthException") {
-              console.log("You don't have permission to like that post" +
-                " - did you give me permission to post for you?");
+            if (response.result.error.type == 'OAuthException') {
+              console.log('You don\'t have permission to like that post' +
+                ' - did you give me permission to post for you?');
             }
           } else {
             callback();
@@ -169,25 +169,25 @@ module.exports = (function() {
      * @param [string] message - The message to post as a comment
      */
     YoFace.prototype.comment = function(postId, message) {
-        var url = "/" + postId + "/comments";
+        var url = '/' + postId + '/comments';
 
         FB.api(
           url,
-          "POST", {
-            "message": message
+          'POST', {
+            'message': message
           },
           function(response) {
             if (response.result.error) {
-              if (response.result.error.type == "OAuthException") {
-                console.log("You don't have permission to comment on that post" +
-                  " - did you give me permission to post for you?");
+              if (response.result.error.type == 'OAuthException') {
+                console.log('You don\'t have permission to comment on that post' +
+                  ' - did you give me permission to post for you?');
               }
             } else {
               callback();
             }
           }
         );
-    }
+    };
 
-    return new YoFace(fb);
+    return new YoFace(FB);
 })();

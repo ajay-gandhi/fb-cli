@@ -34,7 +34,7 @@ module.exports = (function () {
 	 */
 	var clear = function () {
 	  process.stdout.write('\u001B[2J\u001B[0;0f');
-	}
+	};
 	Printer.prototype.clear = clear;
 
 
@@ -45,7 +45,7 @@ module.exports = (function () {
 	 */
 	var fmta = function (key, title) {
 	  return chalk.dim('(' + key + ') ') + title + ' ';
-	}
+	};
 	Printer.prototype.fmta = fmta;
 
 

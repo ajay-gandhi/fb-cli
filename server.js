@@ -8,7 +8,6 @@ module.exports = (function () {
 	function WebHack () {}
 
 	WebHack.prototype.showLogin = function() {
-		var self = this;
 		return new Promise(function (resolve, reject) {
 			var server = http.createServer(function(req, res) {
 				
