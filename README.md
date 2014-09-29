@@ -13,6 +13,12 @@ BAM! Done.
 
 # Usage
 
+The first time you run `facebook`, you'll have to give it give it permission to create the config file. Do this by running:
+
+    $ sudo facebook
+
+And subsequently entering your password. After that, just run this anytime you want:
+
     $ facebook
 
 BAM! That's it. Use the `--help` parameter for a list of options. Or just run it. Yeah.
