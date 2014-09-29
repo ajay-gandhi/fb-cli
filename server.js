@@ -5,17 +5,17 @@ var http = require('http'),
     Promise = require('es6-promise').Promise;
 
 module.exports = (function () {
-	function WebHack () {}
+	function WebHack() {}
 
 	WebHack.prototype.showLogin = function() {
 		return new Promise(function (resolve, reject) {
 			var server = http.createServer(function(req, res) {
-				
+
 				var url_parts = url.parse(req.url, true);
 				var query = url_parts.query;
 
 				if (Object.keys(query).length === 0) {
-					var fileStream = fs.createReadStream('./do/login.html');
+					var fileStream = fs.createReadStream(__dirname + '/do/login.html');
 					fileStream.pipe(res);
 				} else {
 					server.close();
@@ -29,7 +29,6 @@ module.exports = (function () {
 				}
 
 			}).listen(3000);
-			
 
 			require('open')('http://localhost:3000/');
 		});
