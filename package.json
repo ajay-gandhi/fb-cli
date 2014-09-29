@@ -1,7 +1,7 @@
 {
   "name": "fb-falafel",
-  "version": "0.0.3",
-  "description": "Facebook for the leet",
+  "version": "0.0.4",
+  "description": "Facebook for the 1337",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
