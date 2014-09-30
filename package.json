@@ -8,7 +8,8 @@
   },
   "bin": {
     "yoface": "./index.js",
-    "facebook": "./index.js"
+    "facebook": "./index.js",
+    "falafel": "./index.js"
   },
   "repository": {
     "type": "git",
