@@ -1,6 +1,8 @@
+'use strict';
 // Module to download files and delete them
-var fs = require('fs'),
+var fs = require('fs-extra'),
     request = require('request');
+
 
 /**
  * Downloads a file
@@ -11,22 +13,28 @@ var fs = require('fs'),
  *   http://stackoverflow.com/questions/12740659/downloading-images-with-node-js
  */
 module.exports.download = function(uri, filename, callback){
-  request.head(uri, function(err, res, body){
-    if (err) console.trace(err);
+  var file = module.exports.falafelHouse + filename;
 
-    // Only do things if there is an image
-    if (parseInt(res.headers['content-length']) > 0) {
-      request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
-    }
+  fs.ensureFile(file, function () {
+    request.head(uri, function(err, res){
+        if (err) console.trace(err);
+
+        // Only do things if there is an image
+        if (parseInt(res.headers['content-length']) > 0) {
+          request(uri).pipe(fs.createWriteStream(file)).on('close', callback);
+        }
+      });
   });
-}
+};
 
 /**
- * @return Returns the user's home dir with hidden folder fb-falafel
+ * The user's home dir with hidden folder fb-falafel
  */
-module.exports.falafelHouse = function() {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.fb-falafel';
-}
+module.exports.falafelHouse = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.fb-falafel';
+
+module.exports.createFile = function (path, callback) {
+  fs.ensureFile(module.exports.falafelHouse + path, callback);
+};
 
 /**
  * Deletes a file
@@ -35,12 +43,12 @@ module.exports.falafelHouse = function() {
  */
 module.exports.delete = function (path, callback) {
   // Check if the file exists
-  fs.exists(path, function (exists) {
+  fs.exists(module.exports.falafelHouse + path, function (exists) {
     if (exists) {
       // If it exists, delete it!
-      fs.unlink(path, function (err) {
+      fs.unlink(module.exports.falafelHouse + path, function (err) {
         if (err) callback(err);
       });
     }
   });
-}
+};

@@ -27,7 +27,7 @@ module.exports = (function() {
      */
     YoFace.prototype.nextNews = function() {
       var self = this;
-      var cacheImgPath = fileUtils.falafelHouse() + '/cache.jpg';
+      var cacheImgPath = '/cache.jpg';
 
       return new Promise(function(resolve, reject) {
 

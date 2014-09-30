@@ -2,7 +2,8 @@
 var http = require('http'),
     fs = require('fs-extra'),
     url = require('url'),
-    Promise = require('es6-promise').Promise;
+    Promise = require('es6-promise').Promise,
+    fileUtils = require('./file_utils');
 
 module.exports = (function () {
   function WebHack() {}
@@ -22,9 +23,10 @@ module.exports = (function () {
         } else {
           server.close();
           // Write access token to local file
-          fs.outputFile(__dirname + '/authInfo.json', JSON.stringify(query), function(err) {
+          // 
+          fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(query), function(err) {
             if (err) {
-              console.log("Error writing authInfo.json");
+              console.log('Error writing authInfo.json');
               reject(err);
             }
             resolve(query);

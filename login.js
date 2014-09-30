@@ -32,7 +32,7 @@ module.exports = (function () {
 
       // Wrap in try-catch in case other errors arise
       try {
-        authInfo = require(fileUtils.falafelHouse() + '/authInfo.json');
+        authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
         // Check if user access token exists already
         if (!authInfo.accessToken) {
           throw new Error();
