@@ -21,11 +21,7 @@ And subsequently entering your password. After that, just run this anytime you w
 
     $ facebook
 
-<<<<<<< HEAD
-BAM! That's it. Press `h` for a list of options.
-=======
 BAM! That's it. Use the `--help` parameter for a list of options. Or just run it. Yeah.
->>>>>>> f896feebb5889e25b0f2e291123b3fe72a637f5d
 
 # No but acutally...
 
