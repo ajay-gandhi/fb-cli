@@ -8,7 +8,7 @@ module.exports = function(file) {
   return new Promise(function (resolve, reject) {
     var filename = file.substring(0, file.lastIndexOf('.'));
     // Convert image to png
-    var convertImg = exec("convert " + file + " " + filename + ".png", function (error) {
+    var convertImg = exec('convert ' + file + ' ' + filename + '.png', function (error) {
       if (error !== null) {
         reject(error);
       } else {
@@ -33,14 +33,14 @@ module.exports = function(file) {
           colored: true
         });
         // Asciify image
-        asciiConverter.convert("./" + filename + ".png", function(err, converted) {
+        asciiConverter.convert(filename + '.png', function(err, converted) {
           if (err) {
             // Delete the converted file
-            exec("rm " + filename + ".png");
+            exec('rm ' + filename + '.png');
             reject(err);
           } else {
             // Delete the converted file
-            exec("rm " + filename + ".png");
+            exec('rm ' + filename + '.png');
             // Output the ascii!
             resolve(converted);
           }

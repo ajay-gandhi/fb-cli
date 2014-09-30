@@ -23,6 +23,7 @@ module.exports = (function() {
      */
     YoFace.prototype.nextNews = function() {
       var self = this;
+      var dir = __dirname;
 
       return new Promise(function(resolve, reject) {
 
@@ -50,12 +51,13 @@ module.exports = (function() {
 
             if (url !== undefined) {
               // Delete old image
-              fileUtils.delete('cache.jpg', function(error) {
+              fileUtils.delete(dir + '/cache.jpg', function(error) {
                 console.log(error);
               });
               // Download new image and asciify
-              fileUtils.download(url, 'cache.jpg', function() {
-                ascii('cache.jpg')
+              console.log();
+              fileUtils.download(url, dir + '/cache.jpg', function() {
+                ascii(dir + '/cache.jpg')
                   .then(function(output) {
                     console.log(output);
                   })
@@ -76,12 +78,12 @@ module.exports = (function() {
 
           if (url !== undefined) {
             // Delete old image
-            fileUtils.delete('cache.jpg', function(error) {
+            fileUtils.delete(dir + '/cache.jpg', function(error) {
                 console.log(error);
             });
             // Download new image and asciify
-            fileUtils.download(url, 'cache.jpg', function() {
-              ascii('cache.jpg')
+            fileUtils.download(url, dir + '/cache.jpg', function() {
+              ascii(dir + '/cache.jpg')
                 .then(function(output) {
                     console.log(output);
                 })

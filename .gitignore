@@ -2,3 +2,4 @@ node_modules
 authInfo.json
 cache.jpg
 branches
+*.log

@@ -20,7 +20,10 @@ module.exports = (function () {
 				} else {
 					server.close();
 					fs.outputFile(__dirname + '/authInfo.json', JSON.stringify(query), function(err) {
-						if (err) { console.log("error writing authInfo.json");reject(err);}
+						if (err) {
+							console.log("Error writing authInfo.json");
+							reject(err);
+						}
 						resolve(query);
 					});
 				}
@@ -35,8 +38,3 @@ module.exports = (function () {
 	return new WebHack();
 
 })();
-
-
-
-
-
