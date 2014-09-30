@@ -1,6 +1,7 @@
 'use strict';
 var Promise = require('es6-promise').Promise,
-Facebook = require('facebook-node-sdk');
+    Facebook = require('facebook-node-sdk'),
+    fileUtils = require('./file_utils');
 
 
 module.exports = (function () {
@@ -31,7 +32,7 @@ module.exports = (function () {
 
       // Wrap in try-catch in case other errors arise
       try {
-        authInfo = require(__dirname + '/authInfo.json');
+        authInfo = require(fileUtils.falafelHouse() + '/authInfo.json');
         // Check if user access token exists already
         if (!authInfo.accessToken) {
           throw new Error();
