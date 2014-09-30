@@ -2,6 +2,7 @@
 var Promise = require('es6-promise').Promise,
     sizeOf = require('image-size'),
     exec = require('child_process').exec,
+    fileUtils = require('../file_utils'),
     ImageToAscii = require ('./ascii_module');
 
 module.exports = function(file) {
@@ -36,11 +37,11 @@ module.exports = function(file) {
         asciiConverter.convert(filename + '.png', function(err, converted) {
           if (err) {
             // Delete the converted file
-            exec('rm ' + filename + '.png');
+            fileUtils.delete(filename + '.png');
             reject(err);
           } else {
             // Delete the converted file
-            exec('rm ' + filename + '.png');
+            fileUtils.delete(filename + '.png');
             // Output the ascii!
             resolve(converted);
           }

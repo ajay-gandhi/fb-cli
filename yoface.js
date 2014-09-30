@@ -61,7 +61,7 @@ module.exports = (function() {
               // Download new image and asciify
               console.log();
               fileUtils.download(url, cacheImgPath, function() {
-                ascii(cacheImgPath)
+                ascii(fileUtils.falafelHouse + cacheImgPath)
                   .then(function(output) {
                     console.log(output);
                   })
@@ -87,7 +87,7 @@ module.exports = (function() {
             });
             // Download new image and asciify
             fileUtils.download(url, cacheImgPath, function() {
-              ascii(cacheImgPath)
+              ascii(fileUtils.falafelHouse + cacheImgPath)
                 .then(function(output) {
                     console.log(output);
                 })
