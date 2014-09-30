@@ -27,7 +27,7 @@ module.exports = (function() {
      */
     YoFace.prototype.nextNews = function() {
       var self = this;
-      var cacheImgPath = '/cache.jpg';
+      var cacheImgPath = '/cache.png';
 
       return new Promise(function(resolve, reject) {
 
