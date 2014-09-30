@@ -22,6 +22,13 @@ module.exports.download = function(uri, filename, callback){
 }
 
 /**
+ * @return Returns the user's home dir with hidden folder fb-falafel
+ */
+module.exports.falafelHouse = function() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.fb-falafel';
+}
+
+/**
  * Deletes a file
  * @param [string] path - The location of the file
  * @param [function] callback - A callback function for any errors that occur

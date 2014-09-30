@@ -3,6 +3,10 @@ var Promise = require('es6-promise').Promise,
     fileUtils = require('./file_utils.js'),
     ascii = require('./ascii/ascii.js');
 
+function getUserHome() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
 module.exports = (function() {
     /**
      * Initializes yo facebook object, dawg.
@@ -23,7 +27,7 @@ module.exports = (function() {
      */
     YoFace.prototype.nextNews = function() {
       var self = this;
-      var dir = __dirname;
+      var cacheImgPath = fileUtils.falafelHouse() + '/cache.jpg';
 
       return new Promise(function(resolve, reject) {
 
@@ -51,13 +55,13 @@ module.exports = (function() {
 
             if (url !== undefined) {
               // Delete old image
-              fileUtils.delete(dir + '/cache.jpg', function(error) {
+              fileUtils.delete(cacheImgPath, function(error) {
                 console.log(error);
               });
               // Download new image and asciify
               console.log();
-              fileUtils.download(url, dir + '/cache.jpg', function() {
-                ascii(dir + '/cache.jpg')
+              fileUtils.download(url, cacheImgPath, function() {
+                ascii(cacheImgPath)
                   .then(function(output) {
                     console.log(output);
                   })
@@ -78,12 +82,12 @@ module.exports = (function() {
 
           if (url !== undefined) {
             // Delete old image
-            fileUtils.delete(dir + '/cache.jpg', function(error) {
+            fileUtils.delete(cacheImgPath, function(error) {
                 console.log(error);
             });
             // Download new image and asciify
-            fileUtils.download(url, dir + '/cache.jpg', function() {
-              ascii(dir + '/cache.jpg')
+            fileUtils.download(url, cacheImgPath, function() {
+              ascii(cacheImgPath)
                 .then(function(output) {
                     console.log(output);
                 })
