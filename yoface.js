@@ -3,10 +3,6 @@ var Promise = require('es6-promise').Promise,
     fileUtils = require('./file_utils.js'),
     ascii = require('./ascii/ascii.js');
 
-function getUserHome() {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-}
-
 module.exports = (function() {
     /**
      * Initializes yo facebook object, dawg.
