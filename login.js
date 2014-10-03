@@ -1,7 +1,7 @@
 'use strict';
 var Promise = require('es6-promise').Promise,
-    Facebook = require('facebook-node-sdk'),
-    fileUtils = require('./file_utils');
+Facebook = require('facebook-node-sdk'),
+fileUtils = require('./file_utils');
 
 
 module.exports = (function () {
@@ -12,24 +12,23 @@ module.exports = (function () {
   var authInfo;
 
   /**
-   * Resolves with FB object.
-   * @return {[type]} [description]
-   */
+  * Resolves with FB object.
+  * @return {[type]} [description]
+  */
   LoginManager.prototype.login = function() {
     return getAuth()
     .then(function (authInfo) {
       return createFB(config.appID, config.secret, authInfo.accessToken);
-    })
+    });
   };
 
 
   /**
-   * Resolves with authInfo.
-   * @return {[type]} [description]
-   */
+  * Resolves with authInfo.
+  * @return {[type]} [description]
+  */
   function getAuth () {
     return new Promise(function (resolve, reject) {
-
       // Wrap in try-catch in case other errors arise
       try {
         authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
@@ -50,18 +49,18 @@ module.exports = (function () {
   }
 
   /**
-   * Creates a Facebook API object
-   * @param [object] cfg - A config object containing a Facebook appID,
-   *     app secret, and access token
-   * @returns [Facebook] An instance of the Facebook API
-   */
-   var createFB = function(appId, secret, token) {
-       return new Facebook({
-           appID: appId,
-           secret: secret
-       }).setAccessToken(token);
-   };
+  * Creates a Facebook API object
+  * @param [object] cfg - A config object containing a Facebook appID,
+  *     app secret, and access token
+  * @returns [Facebook] An instance of the Facebook API
+  */
+  var createFB = function(appId, secret, token) {
+    return new Facebook({
+      appID: appId,
+      secret: secret
+    }).setAccessToken(token);
+  };
 
   return new LoginManager();
-  
+
 })();
