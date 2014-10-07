@@ -44,8 +44,8 @@ module.exports = (function() {
             self.cache.news = res.data;
             var nextItem = self.cache.news.shift();
 
-            // Remove the loading indicator
-            process.stdout.write('\u001B[1A\u001B[2K');
+            // Remove the loading indicator and an extra line
+            process.stdout.write('\u001B[1A\u001B[2K\u001B[1A\u001B[2K');
 
             var url = nextItem.picture;
 
