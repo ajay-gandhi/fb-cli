@@ -1,8 +1,7 @@
 'use strict';
-// Module to download files and delete them
+// Module to access local files
 var fs = require('fs-extra'),
     request = require('request');
-
 
 /**
  * Downloads a file
@@ -28,10 +27,15 @@ module.exports.download = function(uri, filename, callback){
 };
 
 /**
- * The user's home dir with hidden folder fb-falafel
+ * The user's home dir with hidden folder .fb-falafel/
  */
 module.exports.falafelHouse = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'] + '/.fb-falafel';
 
+/**
+ * Creates a file and any directories required to house that file
+ * @param [string] path - The location of the file
+ * @param [function] callback - The function to call after the file is created
+ */
 module.exports.createFile = function (path, callback) {
   fs.ensureFile(module.exports.falafelHouse + path, callback);
 };
