@@ -1,12 +1,13 @@
 #!/usr/bin/env node
 
 'use strict';
-var fb,
-    printer = require('./printer'),
+var yf, ui, headless,
     YoFace = require('./yoface'),
-    loginstuff = require('./login');
+    accountManager = require('./login'),
+    ui = require('./ui.js');
 
-////////////////////////////// Commandline tools. //////////////////////////////
+
+///////////////////////////// Setup cmdline tools. /////////////////////////////
 
 var program = require('commander');
 var falafel = require('./package.json');
@@ -21,37 +22,63 @@ program
 
   .parse(process.argv);
 
-// Post straight up.
-if (program.post) {
-  loginstuff
-    .login()
-    .then(function (FB) {
-      fb = new YoFace(FB);
-      fb.post(program.post, function () {
-          console.log('Posted.');
-        });
-    });
-}
-
 /////////////////////////////////// Startup. ///////////////////////////////////
 
-
 /**
- * Checks if the user has to login first, then inits.
- * Or as Kevin says:
- *   Start this madness. This blasphemy. SPARTA! GKLADSJFLSKJFL
- * @return {Awesomeness} 2 and a half pounds of it...or at least a promise ;)
+ * Always try to login.
  */
-else {
-  loginstuff
-    .login()
-    .then(function (FB) {
-      var UI = require('./ui.js');
-      var yf = new YoFace(FB);
-      var ui = new UI(printer, yf);
+ var chainofevents = accountManager
 
-      ui.initFalafelMode();
+   // Do the permissions thing.
+   .login()
+
+   // Create YoFace with the resolved FB object
+   .then(function (FB) {
+     yf = new YoFace(FB);
+   })
+
+   // Ask for login for the headless browser thing.
+   .then(function () {
+     return ui.askForLogin();
+   })
+
+   // Deal with the credentials; create the headless browser if we should.
+   .then(function (credentials) {
+
+     // >> If credentials are empty, set some setting to not nagg about it again.
+     // >> If credentials are not empty, do the headless browser login thing.
+     console.log(credentials);
+   })
+
+   // If we're creating the hb, it will be here. Else it will be undefined.
+   // Sore this.
+   .then(function (zombie) {
+     headless = zombie;
+   });
+
+
+// We have a command. Do what it says and dont acutally enter IFM.
+if (program.post) {
+    
+    chainofevents
+      
+      .then(function () {
+        yf.post(program.post, function () {
+            console.log('Posted.');
+          });
+      });
+}
+
+
+// No command. Let the falafels take over the world.
+else {
+  chainofevents
+    // Start the interactive falafel mode! 
+    .then(function () {
+      ui.initFalafelMode(yf, headless);
     })
+
+    // Die on errors.
     .catch(console.trace);
 }
 

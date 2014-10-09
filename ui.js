@@ -1,32 +1,31 @@
 'use strict';
 
 /**
- * Implementation of Interactive Falafel Mode.
+ * Implementation of Interactive Falafel Mode, and other UI goodies.
  */
 
-var inquirer = require('inquirer'),
+var Promise = require('es6-promise').Promise,
+    inquirer = require('inquirer'),
     openlink = require('open'),
-    printer = require('./printer'),
     keypress = require('keypress');
 
 var lastitem = null;
 var text = false;
 var allowedActions = [];
 
-var printer;
-var fb;
+var printer = require('./printer');
+var fb; // YoFace to use. GraphAPI
+var hb; // Headless browser to use. Mobile site.
 
 
 module.exports = (function () {
 
+    function GUIsSuck () {}
 
+    GUIsSuck.prototype.initFalafelMode = function(yoface, zombie) {
+      fb = yoface;
+      hb = zombie;
 
-    function GUIsSuck (p, yoface) {
-        printer = p;
-        fb = yoface;
-    }
-
-    GUIsSuck.prototype.initFalafelMode = function() {
         printer.clear();
         printer.print_falafel();    
         printer.newsfeed_title();
@@ -52,7 +51,45 @@ module.exports = (function () {
         process.stdin.resume();
     };
 
-    return GUIsSuck;
+    GUIsSuck.prototype.askForLogin = function() {
+      textmode(true);
+
+      console.log('For certain features, we need your credentials.' +
+                   'Don\'t worry, we store them on your OS\'s keychain, ' +
+                   '(the same place where all your browser\'s remembered ' +
+                    'passwords are stored). You can get more information' +
+                   'about how all this mcjigger works at ' +
+                   'http://fb-falafel.ml/passwordpolicy\n');
+
+      console.log('If you don\'t feel safe doing this, leave the fields blank.');
+
+      var authQuestions = [
+      {
+        type: 'input',
+        name: 'email',
+        message: 'What is your login email?'
+      },
+      {
+        type: 'password',
+        name: 'password',
+        message: 'What is your password'
+      }];
+
+      return new Promise(function (resolve) {
+        
+        inquirer.prompt(authQuestions, function(answer) {
+          if (answer.email !== '') {
+            resolve(answer);
+          } else {
+            console.log('Alrigt, you can still opt-in later if you want.');
+            resolve({});
+          }
+          textmode(false);
+        });
+      });
+    };
+
+    return new GUIsSuck();
     
 })();
 
