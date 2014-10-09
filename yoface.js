@@ -25,7 +25,7 @@ module.exports = (function() {
             news_next: null
         };
 
-        console.log(this.FB);
+        //console.log(this.FB);
     }
 
     /**

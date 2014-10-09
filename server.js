@@ -15,6 +15,8 @@ var http = require('http'),
 module.exports = (function () {
   function WebHack() {}
 
+
+
   WebHack.prototype.showLogin = function() {
     return new Promise(function (resolve, reject) {
       // Create local server
