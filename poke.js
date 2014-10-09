@@ -32,7 +32,7 @@ module.exports.poke = function(pokee, credentials, callback) {
           // There's a poke button on mobile! :o
           browser.clickLink('Poke', function() {
             if (callback) {
-              callback();
+              callback(firstResult);
             }
           });
         });
