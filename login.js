@@ -2,6 +2,7 @@
 var Promise = require('es6-promise').Promise,
     Facebook = require('facebook-node-sdk'),
     fileUtils = require('./file_utils'),
+    fs = require('fs-extra'),
     keychain = require('xkeychain');
 
 
@@ -84,23 +85,46 @@ module.exports = (function () {
         // Login to FB
         browser.pressButton('Log In', function() {
           // Check if login failed
-          if (false) {
-            reject(new Error('Facebook login failed.'));
+          var results = browser.text('div#objects_container table:first-child td:first-child');
+          if (results.indexOf('password was incorrect') != -1) {
+            // Incorrect password
+            reject(new Error('Incorrect password.'));
+          } else if (results.indexOf('recognize your email') != -1) {
+            // Incorrect email
+            reject(new Error('Incorrect email address.'));
+          } else {
+            // Save password in keychain
+            keychain.setPassword(
+              { account: credentials.email, 
+                service: 'FacebookFalafel', 
+                password: credentials.password 
+              },
+              function(err) {
+                if (err != null && err != undefined)
+                  reject(err);
+              }
+            );
+
+            // Save email since keychain query requires it
+            // Update authInfo.json file
+            var authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
+            if (authInfo.email == undefined) {
+              // Write file
+              authInfo.email = credentials.email;
+              fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(authInfo), function(err) {
+                if (err) {
+                  console.log('Error writing authInfo.json');
+                  reject(err);
+                }
+
+                // If no errors, return the headless browser
+                resolve(browser);
+              });
+            } else {
+              // Email is already written in local file
+              resolve(browser);
+            }
           }
-
-          // Save password.
-          keychain.setPassword(
-            { account: credentials.email, 
-              service: 'FacebookFalafel', 
-              password: credentials.password 
-            }, function(err) {
-              reject(err);
-          });
-
-          // Save email. <<
-
-          // If no errors, return the headless browser
-          resolve(browser);
         });
       });
     }); 

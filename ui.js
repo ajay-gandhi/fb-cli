@@ -2,6 +2,7 @@
 var Promise = require('es6-promise').Promise,
     inquirer = require('inquirer'),
     openlink = require('open'),
+    fileUtils = require('./file_utils'),
     keypress = require('keypress');
 
 var lastitem = null;
@@ -52,44 +53,65 @@ module.exports = (function () {
   };
 
   GUIsSuck.prototype.askForLogin = function() {
-    textmode(true);
-
-    console.log('For certain features, we need your login credentials.\n' +
-                'Don\'t worry, we store them on your OS\'s keychain\n' +
-                '(the same place where your browser stores remembered ' +
-                'passwords).\nYou can get more information' +
-                'about how all this works at\n' +
-                'http://fb-falafel.ml/passwordpolicy\n');
-
-    console.log('If you don\'t feel safe doing this, leave the fields blank.\n');
-
-    var authQuestions = [
-      {
-        type: 'input',
-        name: 'email',
-        message: 'Login email:'
-      },
-      {
-        type: 'password',
-        name: 'password',
-        message: 'Password'
-      }
-    ];
-
-    return new Promise(function (resolve) {
-      inquirer.prompt(authQuestions, function(answer) {
-        if (answer.email !== '') {
-          // If the fields are not blank, return the object
-          resolve(answer);
-        } else {
-          // Let them know that they can do it later and return an
-          // empty object
-          console.log('Alright, you can still opt-in later if you want.');
-          resolve({});
-        }
-        textmode(false);
+    var authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
+    if (authInfo.noEmail != undefined) {
+      // User doesn't want to be asked for email again
+      return new Promise(function (resolve) {
+        resolve(authInfo);
       });
-    });
+    } else if (authInfo.email != undefined) {
+      return new Promise(function (resolve) {
+        resolve(authInfo);
+      });
+    } else {
+      textmode(true);
+
+      console.log('For certain features, we need your login credentials.\n' +
+                  'Don\'t worry, we store them on your OS\'s keychain\n' +
+                  '(the same place where your browser stores remembered ' +
+                  'passwords).\nYou can get more information' +
+                  'about how all this works at\n' +
+                  'http://fb-falafel.ml/passwordpolicy\n');
+
+      console.log('If you don\'t feel safe doing this, leave the fields blank.\n');
+
+      var authQuestions = [
+        {
+          type: 'input',
+          name: 'email',
+          message: 'Login email:',
+          // Validate the email address
+          validate: function(email) {
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if (email.trim() == '' || re.test(email)) {
+              return true;
+            } else {
+              return false
+            }
+          }
+        },
+        {
+          type: 'password',
+          name: 'password',
+          message: 'Password'
+        }
+      ];
+
+      return new Promise(function (resolve) {
+        inquirer.prompt(authQuestions, function(answer) {
+          if (answer.email !== '') {
+            // If the fields are not blank, return the object
+            resolve(answer);
+          } else {
+            // Let them know that they can do it later and return an
+            // empty object
+            console.log('Alright, you can still opt-in later if you want.');
+            resolve({});
+          }
+          textmode(false);
+        });
+      });
+    }
   };
 
   return new GUIsSuck();

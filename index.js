@@ -3,7 +3,9 @@
 'use strict';
 var yf, ui, headless,
     YoFace = require('./yoface'),
+    fs = require('fs-extra'),
     accountManager = require('./login'),
+    fileUtils = require('./file_utils'),
     ui = require('./ui.js');
 
 /////////////////////////// Setup commandline tools. ///////////////////////////
@@ -26,7 +28,7 @@ program
 /**
  * Always try to login.
  */
-var chainofevents = accountManager
+var chainOfEvents = accountManager
 
   // Get FB API object or log in/obtain perms if there is no access token
   .login()
@@ -42,22 +44,44 @@ var chainofevents = accountManager
   })
 
   // Deal with the credentials; create the headless browser if we should.
-  .then(function (credentials) {
-    // Does nothing right now
-    // >> If credentials are empty, set some setting to not nagg about it again.
-    // >> If credentials are not empty, do the headless browser login thing.
-    console.log(credentials);
+  .then(function (loginResults) {
+    if (loginResults.noEmail != undefined) {
+      // User doesn't want to be asked to login
+      return false;
+    } else if (loginResults.accessToken != undefined) {
+      // User email is already saved locally
+      // Query keychain
+    } else if (loginResults.email == undefined) {
+      // User doesn't want to enter email/pass
+      // Write authInfo file so that user isn't asked again
+      var authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
+      authInfo.noEmail = "true";
+      fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(authInfo), function(err) {
+        if (err) {
+          console.log('Error writing authInfo.json');
+          reject(err);
+        }
+      });
+    } else {
+      // User entered their email, so login
+      accountManager.zombieLogin(loginResults)
+        .then(function(browser) {
+          // Successful login, return browser
+          return browser;
+        })
+        .catch(console.error);
+    }
   })
 
   // If we're creating the headless browser, store it here.
-  // Otherwise, it will be undefined
+  // Otherwise, it will be false
   .then(function (zombie) {
     headless = zombie;
   });
 
 // Received a direct command, do what it says instead of entering IFM
 if (program.post) {
-  chainofevents
+  chainOfEvents
     .then(function () {
       yf.post(program.post, function () {
           console.log('Posted.');
@@ -67,7 +91,7 @@ if (program.post) {
 
 // No command. Let the falafels take over the world.
 else {
-  chainofevents
+  chainOfEvents
     // Start interactive falafel mode! 
     .then(function () {
       ui.initFalafelMode(yf, headless);

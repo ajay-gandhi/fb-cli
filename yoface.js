@@ -53,7 +53,7 @@ module.exports = (function() {
             var nextItem = self.cache.news.shift();
 
             // Remove the loading indicator and an extra line
-            process.stdout.write('\u001B[1A\u001B[2K\u001B[1A\u001B[2K');
+            process.stdout.write('\u001B[1A\u001B[2K');
 
             // Grab and asciify the picture if one exists
             var url = nextItem.picture;
