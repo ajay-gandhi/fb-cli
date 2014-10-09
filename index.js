@@ -31,12 +31,12 @@ program
 var chainOfEvents = accountManager
 
   // Get FB API object or log in/obtain perms if there is no access token
-  .login()
+   .connectToGraph()
 
-  // Create YoFace object with the resolved FB object
-  .then(function (FB) {
-    yf = new YoFace(FB);
-  })
+   // Create YoFace with the resolved FB object
+   .then(function (FB) {
+     yf = new YoFace(FB);
+   })
 
   // Ask for login credentials for the headless browser
   .then(function () {
@@ -100,4 +100,3 @@ else {
     // Die on errors.
     .catch(console.trace);
 }
-

@@ -1,6 +1,6 @@
 {
   "name": "fb-falafel",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Facebook for the 1337",
   "main": "index.js",
   "scripts": {
