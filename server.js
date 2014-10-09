@@ -5,9 +5,13 @@ var http = require('http'),
     querystring = require('querystring'),
     request = require('request'),
     Promise = require('es6-promise').Promise,
-    fileUtils = require('./file_utils'),
-    Facebook = require('facebook-node-sdk');
+    fileUtils = require('./file_utils');
 
+
+/**
+ * Login Server.
+ * Facebook thinks we are a web app, so lets set up one to login. 
+ */
 module.exports = (function () {
   function WebHack() {}
 
@@ -44,7 +48,7 @@ module.exports = (function () {
             console.log(longToken);
             var accessTokenObj = {
               accessToken: longToken.access_token
-            }
+            };
 
             // Write access token to local file
             fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(accessTokenObj), function(err) {
@@ -56,7 +60,6 @@ module.exports = (function () {
             });
           });
         }
-
       }).listen(3000);
 
       require('open')('http://localhost:3000/');

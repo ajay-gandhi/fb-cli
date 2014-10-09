@@ -1,12 +1,21 @@
 'use strict';
-var Promise = require('es6-promise').Promise,
+var Promise   = require('es6-promise').Promise,
     fileUtils = require('./file_utils.js'),
-    ascii = require('./ascii/ascii.js');
+    ascii     = require('./ascii/ascii.js');
+
+/**
+ * YoFace.
+ * A wrapper around the Javascript Facebook SDK. Queries Facebook, and returns
+ * promises. Resolves with promised data ready for display. Handles as many
+ * errors as it can. 
+ */
 
 module.exports = (function() {
+
     /**
      * Initializes yo facebook object, dawg.
-     * @param {[type]} fb [description]
+     * @param {facebook} fb   A facebook SDK object to be used for all 
+     *                        operations.
      */
     function YoFace(fb) {
         this.FB = fb;
@@ -15,6 +24,8 @@ module.exports = (function() {
             news: [],
             news_next: null
         };
+
+        console.log(this.FB);
     }
 
     /**
@@ -151,8 +162,8 @@ module.exports = (function() {
     };
 
     /**
-     * Comments on a post
-     * @param [int] postId - The ID of the post to comment on
+     * Comments on a post.
+     * @param [int]    postId  - The ID of the post to comment on
      * @param [string] message - The message to post as a comment
      */
     YoFace.prototype.comment = function(postId, message, callback) {
