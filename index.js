@@ -30,13 +30,14 @@ program
  var chainofevents = accountManager
 
    // Do the permissions thing.
-   .login()
+   .connectToGraph()
 
    // Create YoFace with the resolved FB object
    .then(function (FB) {
      yf = new YoFace(FB);
    })
 
+   /* 
    // Ask for login for the headless browser thing.
    .then(function () {
      return ui.askForLogin();
@@ -55,7 +56,7 @@ program
    .then(function (zombie) {
      headless = zombie;
    });
-
+    */
 
 // We have a command. Do what it says and dont acutally enter IFM.
 if (program.post) {

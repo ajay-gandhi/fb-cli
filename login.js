@@ -17,10 +17,10 @@ module.exports = (function () {
   //////////////////////////// Graph API Logging In ////////////////////////////
 
   /**
-   * Attempts to login, then resolves with FB object.
+   * Attempts to authenticate to the Facebook Graph API.
    * @return {[type]} [description]
    */
-  LoginManager.prototype.login = function() {
+  LoginManager.prototype.connectToGraph = function() {
     var config = require('./config.json');
     return getAuth().then(function (authInfo) {
       return new Facebook({
@@ -31,13 +31,14 @@ module.exports = (function () {
   };
 
   /**
-   * Resolves with authInfo; either the one stored or asks the user to login.
+   * Resolves with authInfo; either the one stored or asks the user to 
+   * authenticate.
    */
   var getAuth = function () {
     return new Promise(function (resolve, reject) {
       var authInfo;
 
-      // Will raise if user needs to login.
+      // Will raise if user needs to authenticate.
       try {
         authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
         // Check if user access token exists already
@@ -49,9 +50,9 @@ module.exports = (function () {
         resolve(authInfo);
       } 
 
-      // User has to login to Facebook
+      // User has to authenticate to Facebook
       catch (e) {
-        console.log('Looks like you have to login.');
+        console.log('Looks like you have to authenticate.');
         var server = require('./server');
         return server.showLogin().catch(console.trace);
       }
