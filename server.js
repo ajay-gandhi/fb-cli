@@ -9,27 +9,30 @@ var http = require('http'),
 
 
 /**
- * Login Server.
- * Facebook thinks we are a web app, so lets set up one to login. 
+ * Login Server
+ * Facebook thinks we are a web app, so set up one to login and set
+ *   up permissions for the app
  */
 module.exports = (function () {
+
   function WebHack() {}
-
-
 
   WebHack.prototype.showLogin = function() {
     return new Promise(function (resolve, reject) {
       // Create local server
       var server = http.createServer(function(req, res) {
 
+        // When a request is passed, get the request pieces
         var url_parts = url.parse(req.url, true);
         var query = url_parts.query;
 
+        // If there is no request, the user has not logged in yet
         if (Object.keys(query).length === 0) {
           // Open do/login.html
           var fileStream = fs.createReadStream(__dirname + '/do/login.html');
           fileStream.pipe(res);
         } else {
+          // Otherwise, grab the access token
           server.close();
           var shortToken = query;
 

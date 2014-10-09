@@ -7,7 +7,7 @@ var Promise = require('es6-promise').Promise,
 
 /**
  * Handles all of the logging in, both through the facebook Graph API and
- * through the Zombie.
+ * through the headless browser (zombie).
  */
 
 module.exports = (function () {
@@ -31,11 +31,11 @@ module.exports = (function () {
   };
 
   /**
-   * Resolves with authInfo; either the one stored or asks the user to 
-   * authenticate.
+   * Ensures that an access token exists, otherwise asks the user to login
+   * @returns [Promise] An object holding the access token or an error
    */
   var getAuth = function () {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       var authInfo;
 
       // Will raise if user needs to authenticate.
@@ -64,41 +64,44 @@ module.exports = (function () {
   //////////////////////////////// Zombie Login ////////////////////////////////
 
   /**
-   * Logins through a headless browser using the given credentials.
-   * @param  {Credentials} credentials {username, password}
-   * @return {Promise}                 A Promise that resolves to an
-   *                                   an authenticated zombie on 
-   *                                   m.facebook.com's newsfeed. 
+   * Logs in through a headless browser using the given credentials.
+   * @param [Object] credentials An object {email, password} containing the
+   *   credentials needed to log in to Facebook
+   * @returns [Promise] A Promise that resolves to an authenticated headless
+   *   browser m.facebook.com's newsfeed. 
    */
   LoginManager.prototype.zombieLogin = function(credentials) {
 
     return new Promise(function (resolve, reject) {
       var browser = new (require('zombie'))();
 
+      // Mobile website has fewer JS scripts and simpler page layout
+      // More headless browser friendly
       browser.visit('http://m.facebook.com/', function () {
 
         // Fill out email and pw
         browser.fill('email', credentials.email);
         browser.fill('pass', credentials.password);
 
-        // Login failed
-        if (false) {
-          reject(new Error('Login Failed'));
-        }
-
-        // Save password.
-        keychain.setPassword(
-          { account: credentials.email, 
-            service: 'FacebookFalafel', 
-            password: credentials.password 
-          }, function(err) {
-            reject(err);
-        });
-
-        // Save email. <<
-
         // Login to FB
         browser.pressButton('Log In', function() {
+          // Check if login failed
+          if (false) {
+            reject(new Error('Facebook login failed.'));
+          }
+
+          // Save password.
+          keychain.setPassword(
+            { account: credentials.email, 
+              service: 'FacebookFalafel', 
+              password: credentials.password 
+            }, function(err) {
+              reject(err);
+          });
+
+          // Save email. <<
+
+          // If no errors, return the headless browser
           resolve(browser);
         });
       });
@@ -106,19 +109,23 @@ module.exports = (function () {
   };
 
   /**
-   * Retrives password from keychain for a given email.
-   * Returns promise that resolves to a Credentials object with email and
-   * password. An empty object if no credentials could be found.
+   * Retrieves password from keychain for a given email.
+   * @param [string] email - The email for which to search for a password
+   * @returns [Promise] Resolves to a Credentials object with email and
+   *   password or an empty object if no credentials could be found
    */
   LoginManager.prototype.getCredentials = function(email) {
     return new Promise(function (resolve) {
       keychain.getPassword(
-        { account: email, 
-          service: 'FacebookFalafel' },      
-          function(err, pass) {
-            if (err) resolve({});
-            resolve({email: email, password: pass});
-          });
+        {
+          account: email, 
+          service: 'FacebookFalafel'
+        },      
+        function(err, pass) {
+          if (err) resolve({});
+          resolve({email: email, password: pass});
+        }
+      );
     });
   };
 

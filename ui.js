@@ -1,9 +1,4 @@
 'use strict';
-
-/**
- * Implementation of Interactive Falafel Mode, and other UI goodies.
- */
-
 var Promise = require('es6-promise').Promise,
     inquirer = require('inquirer'),
     openlink = require('open'),
@@ -14,111 +9,125 @@ var text = false;
 var allowedActions = [];
 
 var printer = require('./printer');
-var fb; // YoFace to use. GraphAPI
-var hb; // Headless browser to use. Mobile site.
+var fb; // YoFace object to use (Graph API)
+var hb; // Headless browser to use (mobile site)
 
+/**
+ * Implementation of Interactive Falafel Mode and other UI goodies.
+ */
 
 module.exports = (function () {
 
-    function GUIsSuck () {}
+  function GUIsSuck () {}
 
-    GUIsSuck.prototype.initFalafelMode = function(yoface, zombie) {
-      fb = yoface;
-      hb = zombie;
+  GUIsSuck.prototype.initFalafelMode = function(yoface, zombie) {
+    fb = yoface;
+    hb = zombie;
 
-        printer.clear();
-        printer.print_falafel();    
-        printer.newsfeed_title();
-    
-        // Log first newsfeed thingy
-        fb.nextNews()
-            // Save for user interaction
-            .then(function (news) {
-              lastitem = news;
-              return lastitem;
-            })
-            // Print
-            .then(function(news) {
-              printer.print_newsfeed_item(news);
-              allowedActions = news.allowedActions;
-            })
-            .catch(console.error);
-        
-        // Start catching keypresses
-        keypress(process.stdin);
-        process.stdin.on('keypress', manage_keys);
-        process.stdin.setRawMode(true);
-        process.stdin.resume();
-    };
+    // Print the opening header for Interactive Falafel Mode
+    printer.clear();
+    printer.print_falafel();    
+    printer.newsfeed_title();
 
-    GUIsSuck.prototype.askForLogin = function() {
-      textmode(true);
+    // Log first newsfeed item
+    fb.nextNews()
+      // Save the item for user interaction
+      .then(function (news) {
+        lastitem = news;
+        return lastitem;
+      })
 
-      console.log('For certain features, we need your credentials.' +
-                   'Don\'t worry, we store them on your OS\'s keychain, ' +
-                   '(the same place where all your browser\'s remembered ' +
-                    'passwords are stored). You can get more information' +
-                   'about how all this mcjigger works at ' +
-                   'http://fb-falafel.ml/passwordpolicy\n');
+      // Actually print it
+      .then(function(news) {
+        printer.print_newsfeed_item(news);
+        allowedActions = news.allowedActions;
+      })
+      .catch(console.error);
+      
+    // Start catching keypresses
+    keypress(process.stdin);
+    process.stdin.on('keypress', manage_keys);
+    process.stdin.setRawMode(true);
+    process.stdin.resume();
+  };
 
-      console.log('If you don\'t feel safe doing this, leave the fields blank.');
+  GUIsSuck.prototype.askForLogin = function() {
+    textmode(true);
 
-      var authQuestions = [
+    console.log('For certain features, we need your login credentials.\n' +
+                'Don\'t worry, we store them on your OS\'s keychain\n' +
+                '(the same place where your browser stores remembered ' +
+                'passwords).\nYou can get more information' +
+                'about how all this works at\n' +
+                'http://fb-falafel.ml/passwordpolicy\n');
+
+    console.log('If you don\'t feel safe doing this, leave the fields blank.\n');
+
+    var authQuestions = [
       {
         type: 'input',
         name: 'email',
-        message: 'What is your login email?'
+        message: 'Login email:'
       },
       {
         type: 'password',
         name: 'password',
-        message: 'What is your password'
-      }];
+        message: 'Password'
+      }
+    ];
 
-      return new Promise(function (resolve) {
-        
-        inquirer.prompt(authQuestions, function(answer) {
-          if (answer.email !== '') {
-            resolve(answer);
-          } else {
-            console.log('Alrigt, you can still opt-in later if you want.');
-            resolve({});
-          }
-          textmode(false);
-        });
+    return new Promise(function (resolve) {
+      inquirer.prompt(authQuestions, function(answer) {
+        if (answer.email !== '') {
+          // If the fields are not blank, return the object
+          resolve(answer);
+        } else {
+          // Let them know that they can do it later and return an
+          // empty object
+          console.log('Alright, you can still opt-in later if you want.');
+          resolve({});
+        }
+        textmode(false);
       });
-    };
+    });
+  };
 
-    return new GUIsSuck();
+  return new GUIsSuck();
     
 })();
 
+/**
+ * Handles keypresses, performing the action corresponding to each key combo
+ * @param [type] ch - Unused
+ * @param [Object] key - An object containing information about which key
+ *   was pressed
+ */
 var manage_keys = function (ch, key) {
   // Were inputting text, so don't do anything else.
   if (text) return;
 
-  // Next news feed item.
+  // Next news feed item
   if (key && key.name == 'space') { action_next(); return; }
 
-  // Quit.
+  // Quit
   if (key && key.ctrl && key.name == 'c') { action_close(); return; }
 
-  // Like.
-  if (key && lastitem && key.name == 'l') { action_like(); return; }
+  // Like
+  if (key && lastitem && key.name == 'l') { action_like();  return; }
 
-  // Comment.
+  // Comment
   if (key && lastitem && key.name == 'c') { mode_comment(); return; }
   
   // Open in the browser
   if (key && lastitem && key.name == 'o' && allowedActions.indexOf('o') != -1) { openlink(lastitem.link); return; }
 
-  // Post.
+  // Post
   if (key && key.name == 'p') { mode_post(); return; }
 
-  // Help.
+  // Help
   if (key && key.name == 'h') { printer.shelp(); return; }
 
-  // Command mode.
+  // Command mode
   if (key && key.name == 'escape') { mode_command(); return; }
 };
 
@@ -156,8 +165,7 @@ var action_top = function () {
 };
 
 /**
- * Likes the last displayed post.
- * @return {[type]} [description]
+ * Likes the last displayed post
  */
 var action_like = function () {
   fb.like(lastitem.id, function() {
@@ -176,27 +184,24 @@ var action_close = function () {
 
 /**
  * Displays next newsfeed item.
- * @return {[type]} [description]
  */
 var action_next = function () {
   fb.nextNews()
-    // Save for user interaction
+    // Save item for user interaction
     .then(function (news) {
       lastitem = news;
       allowedActions = lastitem.allowedActions;
       return lastitem;
     })
-    // Print
+    // Print item
     .then(printer.print_newsfeed_item)
     .catch(console.error);
 };
 
 //////////////////////////////////// Modes. ////////////////////////////////////
 
-
 /**
- * Asks user for comment, and posts it.
- * @return {[type]} [description]
+ * Asks user for comment, and posts it to the latest newsfeed item
  */
 var mode_comment = function () {
   textmode(true);
@@ -218,8 +223,7 @@ var mode_comment = function () {
 
 
 /**
- * Asks user for status update, and posts it.
- * @return {[type]} [description]
+ * Asks user for status update, and posts it
  */
 var mode_post = function () {
   textmode(true);
@@ -239,8 +243,7 @@ var mode_post = function () {
 };
 
 /**
- * Asks user for commands, and executes them.
- * @return {[type]} [description]
+ * Asks user for a command, and executes it
  */
 var mode_command = function () {
   textmode(true);
@@ -254,8 +257,8 @@ var mode_command = function () {
 
 
 /**
- * Enables textmode, so we can input strings of characters.
- * @param  [bool] tm - Enter (1) or exit (0) textmode
+ * Toggles textmode, so we can input strings of characters
+ * @param [bool] tm - Whether to enter (true) or exit (false) textmode
  */
 var textmode = function (tm) {
   if (tm) {

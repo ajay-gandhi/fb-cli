@@ -6,8 +6,7 @@ var yf, ui, headless,
     accountManager = require('./login'),
     ui = require('./ui.js');
 
-
-///////////////////////////// Setup cmdline tools. /////////////////////////////
+/////////////////////////// Setup commandline tools. ///////////////////////////
 
 var program = require('commander');
 var falafel = require('./package.json');
@@ -29,13 +28,13 @@ program
  */
  var chainofevents = accountManager
 
-   // Do the permissions thing.
+  // Get FB API object or log in/obtain perms if there is no access token
    .connectToGraph()
 
    // Create YoFace with the resolved FB object
    .then(function (FB) {
      yf = new YoFace(FB);
-   })
+   });
 
    /* 
    // Ask for login for the headless browser thing.
@@ -43,13 +42,15 @@ program
      return ui.askForLogin();
    })
 
-   // Deal with the credentials; create the headless browser if we should.
-   .then(function (credentials) {
+  // Create YoFace object with the resolved FB object
+  .then(function (FB) {
+    yf = new YoFace(FB);
+  })
 
-     // >> If credentials are empty, set some setting to not nagg about it again.
-     // >> If credentials are not empty, do the headless browser login thing.
-     console.log(credentials);
-   })
+  // Ask for login credentials for the headless browser
+  .then(function () {
+    return ui.askForLogin();
+  })
 
    // If we're creating the hb, it will be here. Else it will be undefined.
    // Sore this.
@@ -58,23 +59,20 @@ program
    });
     */
 
-// We have a command. Do what it says and dont acutally enter IFM.
+// Received a direct command, do what it says instead of entering IFM
 if (program.post) {
-    
-    chainofevents
-      
-      .then(function () {
-        yf.post(program.post, function () {
-            console.log('Posted.');
-          });
-      });
+  chainofevents
+    .then(function () {
+      yf.post(program.post, function () {
+          console.log('Posted.');
+        });
+    });
 }
-
 
 // No command. Let the falafels take over the world.
 else {
   chainofevents
-    // Start the interactive falafel mode! 
+    // Start interactive falafel mode! 
     .then(function () {
       ui.initFalafelMode(yf, headless);
     })
