@@ -32,7 +32,7 @@ var manage_keys = function (ch, key) {
   if (key && lastitem && key.name == 'l') { action_like(); return; }
 
   // Comment.
-  if (key && lastitem && key.name == 'c' && allowedActions.indexOf('c') != -1) { mode_comment(); return; }
+  if (key && lastitem && key.name == 'c') { mode_comment(); return; }
   
   // Open in the browser
   if (key && lastitem && key.name == 'o' && allowedActions.indexOf('o') != -1) { open(lastitem.link); return; }

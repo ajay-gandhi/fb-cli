@@ -39,13 +39,15 @@ module.exports = (function () {
             '&client_id=' + config.appID +
             '&client_secret=' + config.secret +
             '&fb_exchange_token=' + query.accessToken;
+
           request(longTokenURL, function(err, resp, body) {
             if (err) {
               console.log('Error getting long-lived token.');
               console.error(err);
             }
+            // Returned as a querystring, not JSON
             var longToken = querystring.parse(body);
-            console.log(longToken);
+            // Rename
             var accessTokenObj = {
               accessToken: longToken.access_token
             };
