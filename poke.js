@@ -2,12 +2,12 @@
 var browser = new (require('zombie'))();
 
 /**
- * Pokes the closest match to the name pokee by loggin in to Facebook with
+ * Pokes the closest match to the provided pokee by logging in to Facebook with
  *   provided credentials. Runs callback() after a successful poke.
- * @param pokee - The name of the person to poke
- * @param credentials - An object containing the email and password
+ * @param [string] pokee - The name of the person to poke
+ * @param [Object] credentials - An object containing the email and password
  *   (those exact property names) of the user in order to login to Facebook
- * @param callback - A function to call after the person is poked
+ * @param [function] callback - A function to call after the person is poked
  */
 module.exports.poke = function(pokee, credentials, callback) {
   // Load mobile site because fewer JS hacks, easier to find poke button
