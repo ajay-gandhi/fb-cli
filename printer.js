@@ -19,7 +19,7 @@ module.exports = (function () {
   };
 
   /**
-   * Prints a full-width separator
+   * Prints a full-width horizontal rule
    */
   var horizontalRule = function() {
     var size = require('window-size');
@@ -30,6 +30,24 @@ module.exports = (function () {
     console.log(chalk.cyan(separator));
   };
   Printer.prototype.horizontalRule = horizontalRule;
+
+  /**
+   * Prints a full-width horizontal rule with text
+   * @param text - The text to embed in the rule
+   */
+  var hrWithText = function(text) {
+    var size = require('window-size');
+    var prefix = '────( ' + text + ' )';
+    var sepLength = size.width - prefix.length;
+    // Append – until window length is reached
+    var separator = '';
+    for (var i = 0; i < sepLength; i++) {
+      separator += '─';
+    }
+    separator = '────( ' + chalk.bold(chalk.green(text)) + ' )' + separator;
+    console.log(chalk.cyan(separator) + '\n');
+  }
+  Printer.prototype.hrWithText = hrWithText;
 
   /**
    * Clears the screen and places the cursor at the top left
@@ -114,10 +132,8 @@ module.exports = (function () {
    * @param [Object] news The Graph API newsfeed item to print
    */
   Printer.prototype.print_newsfeed_item = function(news) {
-    horizontalRule();
-
     // Whose post is it
-    console.log(chalk.bgCyan(chalk.black(news.from.name)) + ':\n');
+    hrWithText(news.from.name);
 
     if (news.story) console.log(news.story + '\n');
     if (news.message) {
