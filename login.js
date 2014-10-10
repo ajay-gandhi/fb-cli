@@ -143,8 +143,7 @@ module.exports = (function () {
 
       // Something to save
       if (Object.keys(credentials).length !== 0) {
-        console.log(credentials)
-
+        
         // Save password in keychain
         keychain.setPassword(
           { account: credentials.email, 
