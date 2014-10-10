@@ -2,7 +2,6 @@
 var Promise = require('es6-promise').Promise,
     inquirer = require('inquirer'),
     openlink = require('open'),
-    fileUtils = require('./file_utils'),
     keypress = require('keypress');
 
 var lastitem = null;
@@ -53,65 +52,53 @@ module.exports = (function () {
   };
 
   GUIsSuck.prototype.askForLogin = function() {
-    var authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
-    if (authInfo.noEmail != undefined) {
-      // User doesn't want to be asked for email again
-      return new Promise(function (resolve) {
-        resolve(authInfo);
-      });
-    } else if (authInfo.email != undefined) {
-      return new Promise(function (resolve) {
-        resolve(authInfo);
-      });
-    } else {
-      textmode(true);
+    textmode(true);
 
-      console.log('For certain features, we need your login credentials.\n' +
-                  'Don\'t worry, we store them on your OS\'s keychain\n' +
-                  '(the same place where your browser stores remembered ' +
-                  'passwords).\nYou can get more information ' +
-                  'about how all this works at\n' +
-                  'http://fb-falafel.ml/passwordpolicy\n');
+    console.log('For certain features, we need your login credentials.\n' +
+                'Don\'t worry, we store them on your OS\'s keychain\n' +
+                '(the same place where your browser stores remembered ' +
+                'passwords).\nYou can get more information ' +
+                'about how all this works at\n' +
+                'http://fb-falafel.ml/passwordpolicy\n');
 
-      console.log('If you don\'t feel safe doing this, leave the fields blank.\n');
+    console.log('If you don\'t feel safe doing this, leave the fields blank.\n');
 
-      var authQuestions = [
-        {
-          type: 'input',
-          name: 'email',
-          message: 'Login email:',
-          // Validate the email address
-          validate: function(email) {
-            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-            if (email.trim() == '' || re.test(email)) {
-              return true;
-            } else {
-              return false
-            }
-          }
-        },
-        {
-          type: 'password',
-          name: 'password',
-          message: 'Password'
-        }
-      ];
-
-      return new Promise(function (resolve) {
-        inquirer.prompt(authQuestions, function(answer) {
-          if (answer.email !== '') {
-            // If the fields are not blank, return the object
-            resolve(answer);
+    var authQuestions = [
+      {
+        type: 'input',
+        name: 'email',
+        message: 'Login email:',
+        // Validate the email address
+        validate: function(email) {
+          var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+          if (email.trim() === '' || re.test(email)) {
+            return true;
           } else {
-            // Let them know that they can do it later and return an
-            // empty object
-            console.log('Alright, you can still opt-in later if you want.');
-            resolve({});
+            return false;
           }
-          textmode(false);
-        });
+        }
+      },
+      {
+        type: 'password',
+        name: 'password',
+        message: 'Password'
+      }
+    ];
+
+    return new Promise(function (resolve) {
+      inquirer.prompt(authQuestions, function(answer) {
+        if (answer.email !== '' && answer.password !== '') {
+          // If the fields are not blank, return the object
+          resolve(answer);
+        } else {
+          // Let them know that they can do it later and return an
+          // empty object
+          console.log('Alright, you can still opt-in later if you want.');
+          resolve({});
+        }
+        textmode(false);
       });
-    }
+    });
   };
 
   return new GUIsSuck();
@@ -155,13 +142,14 @@ var manage_keys = function (ch, key) {
 
 var manage_commands = function (cmd) {
   
-  if (cmd === 'top')      { action_top();     return; }
-  if (cmd === 'help')     { printer.chelp();  return; }
-  if (cmd === 'post')     { mode_post();      return; }
-  if (cmd === 'like')     { mode_post();      return; }
-  if (cmd === 'comment')  { mode_comment();   return; }
-  if (cmd === 'quit')     { action_close();   return; }
-  if (cmd === 'next')     { action_next();    return; }
+  if (cmd === 'top')      { action_top();                     return; }
+  if (cmd === 'help')     { printer.chelp(); mode_command();  return; }
+  if (cmd === 'post')     { mode_post();                      return; }
+  if (cmd === 'like')     { mode_post();                      return; }
+  if (cmd === 'comment')  { mode_comment();                   return; }
+  if (cmd === 'quit')     { action_close();                   return; }
+  if (cmd === 'next')     { action_next();                    return; }
+  if (cmd === '.')        { mode_shortcuts();                 return; }
 
   console.log('No command `' + cmd + '`.');
 };
@@ -277,6 +265,12 @@ var mode_command = function () {
   });
 };
 
+/**
+ * Asks user for a command, and executes it
+ */
+var mode_shortcuts = function () {
+  textmode(false);
+};
 
 /**
  * Toggles textmode, so we can input strings of characters

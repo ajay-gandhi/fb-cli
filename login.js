@@ -100,37 +100,7 @@ module.exports = (function () {
             // Incorrect email
             reject(new Error('Incorrect email address.'));
           } else {
-            // Save password in keychain
-            keychain.setPassword(
-              { account: credentials.email, 
-                service: 'FacebookFalafel', 
-                password: credentials.password 
-              },
-              function(err) {
-                if (err != null && err != undefined)
-                  reject(err);
-              }
-            );
-
-            // Save email since keychain query requires it
-            // Update authInfo.json file
-            var authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
-            if (authInfo.email == undefined) {
-              // Write file
-              authInfo.email = credentials.email;
-              fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(authInfo), function(err) {
-                if (err) {
-                  console.log('Error writing authInfo.json');
-                  reject(err);
-                }
-
-                // If no errors, return the headless browser
-                resolve(browser);
-              });
-            } else {
-              // Email is already written in local file
-              resolve(browser);
-            }
+            resolve(browser);
           }
         });
       });
@@ -155,6 +125,64 @@ module.exports = (function () {
           resolve({email: email, password: pass});
         }
       );
+    });
+  };
+
+
+  /**
+   * [saveCredentials description]
+   * @param  {[type]} credentials [description]
+   * @return {Promsie}            Resolves to saved credentials
+   */
+  LoginManager.prototype.saveCredentials = function(credentials) {
+
+    var authInfo = require(fileUtils.falafelHouse + '/authInfo.json');
+
+
+    return new Promise(function (resolve, reject) {
+
+      // Something to save
+      if (Object.keys(credentials).length !== 0) {
+        console.log(credentials)
+
+        // Save password in keychain
+        keychain.setPassword(
+          { account: credentials.email, 
+            service: 'FacebookFalafel', 
+            password: credentials.password 
+          },
+          function(err) {
+            if (err !== null && err !== undefined)
+              reject(err);
+          }
+        );
+
+
+        // Update authInfo.json file with new email
+        authInfo.email = credentials.email;
+        fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(authInfo), function(err) {
+          if (err) {
+            console.log('Error writing authInfo.json');
+            reject(err);
+          }
+        });
+      } 
+
+      // Wont nagg again
+      else {
+        authInfo.email = null; // Means asked. Nothing given.
+
+        fs.outputFile(fileUtils.falafelHouse + '/authInfo.json', JSON.stringify(authInfo), function(err) {
+          if (err) {
+            console.log('Error writing authInfo.json');
+            reject(err);
+          }
+        });
+
+      }
+
+      resolve(credentials);
+
     });
   };
 

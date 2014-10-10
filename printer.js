@@ -37,14 +37,14 @@ module.exports = (function () {
    */
   var hrWithText = function(text) {
     var size = require('window-size');
-    var prefix = '────( ' + text + ' )';
+    var prefix = '──( ' + text + ' )';
     var sepLength = size.width - prefix.length;
     // Append – until window length is reached
     var separator = '';
     for (var i = 0; i < sepLength; i++) {
       separator += '─';
     }
-    separator = '────( ' + chalk.bold(chalk.green(text)) + ' )' + separator;
+    separator = '──( ' + chalk.bold(chalk.green(text)) + ' )' + separator;
     console.log(chalk.cyan(separator) + '\n');
   }
   Printer.prototype.hrWithText = hrWithText;
@@ -109,9 +109,9 @@ module.exports = (function () {
     console.log('Keyboard Shortcuts');
     console.log('[spacebar] next post');
     console.log('[p]        post new status update');
-    console.log('[esc]      command mode - \'help\' in command mode for command mode help');
     console.log('[h]        display this message');
     console.log('[ctrl+c]   be productive again');
+    console.log('[esc]      command mode - \'help\' in command mode for command mode help');
   };
 
   /**
@@ -125,6 +125,7 @@ module.exports = (function () {
     console.log('next:      next newsfeed post');
     console.log('help:      display this message');
     console.log('quit:      close falafel');
+    console.log('.:         leave command mode');
   };
 
   /**
