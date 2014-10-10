@@ -69,7 +69,7 @@ module.exports = (function () {
       console.log('For certain features, we need your login credentials.\n' +
                   'Don\'t worry, we store them on your OS\'s keychain\n' +
                   '(the same place where your browser stores remembered ' +
-                  'passwords).\nYou can get more information' +
+                  'passwords).\nYou can get more information ' +
                   'about how all this works at\n' +
                   'http://fb-falafel.ml/passwordpolicy\n');
 

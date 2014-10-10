@@ -33,7 +33,6 @@ module.exports = (function () {
           fileStream.pipe(res);
         } else {
           // Otherwise, grab the access token
-          server.close();
           var shortToken = query;
 
           // Make a call to FB API to get a long-lived token
@@ -63,7 +62,7 @@ module.exports = (function () {
                 console.log('Error writing authInfo.json');
                 reject(err);
               }
-              resolve(longToken);
+              resolve(accessTokenObj);
             });
           });
         }

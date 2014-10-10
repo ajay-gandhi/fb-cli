@@ -51,11 +51,16 @@ module.exports = (function () {
         resolve(authInfo);
       } 
 
-      // User has to authenticate to Facebook
+      // User has to authenticate thru Facebook
       catch (e) {
         console.log('Looks like you have to authenticate.');
         var server = require('./server');
-        return server.showLogin().catch(console.trace);
+        server.showLogin()
+          .then(function(accessTokenObj) {
+            console.log('Authentication complete.\n');
+            resolve(accessTokenObj);
+          })
+          .catch(console.trace);
       }
     });
   };
