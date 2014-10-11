@@ -151,10 +151,29 @@ var manage_commands = function (cmd) {
   if (cmd === 'next')     { action_next();                    return; }
   if (cmd === '.')        { mode_shortcuts();                 return; }
 
+  // Commands with arguments
+  // 
+  var args = cmd.split(" ");
+      cmd  = args.shift();
+
+  if (cmd === 'poke')  { action_poke(args); return; }
+
   console.log('No command `' + cmd + '`.');
 };
 
 /////////////////////////////////// Actions. ///////////////////////////////////
+
+/**
+ * Pokes pokee
+ * @param  {String} pokee Person to poke
+ */
+var action_poke = function (pokee) {
+    pokee = pokee.join(' ');
+    if (pokee === '') {console.log('Who to poke?'); return; }
+    hb.poke(pokee, function (first_result) {
+      console.log("Poked " + first_result + "!");
+    });
+};
 
 /**
  * Go back to the top of the newsfeed.

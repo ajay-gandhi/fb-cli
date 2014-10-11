@@ -101,7 +101,6 @@ var chainOfEvents = account_m
         }
     })
     
-    
     /**
      * Awesome. We got what we needed. Moving on.
      */

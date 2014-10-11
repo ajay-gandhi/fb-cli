@@ -3,7 +3,8 @@ var Promise = require('es6-promise').Promise,
     Facebook = require('facebook-node-sdk'),
     fileUtils = require('./file_utils'),
     fs = require('fs-extra'),
-    keychain = require('xkeychain');
+    keychain = require('xkeychain'),
+    Browser = require('./zombiecat');
 
 
 /**
@@ -100,7 +101,7 @@ module.exports = (function () {
             // Incorrect email
             reject(new Error('Incorrect email address.'));
           } else {
-            resolve(browser);
+            resolve(new Browser(browser));
           }
         });
       });

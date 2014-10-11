@@ -118,14 +118,15 @@ module.exports = (function () {
    * Prints help for command mode
    */
   Printer.prototype.chelp = function() {
-    console.log('top:       return to top of newsfeed');
-    console.log('post:      post status update');
-    console.log('like:      like last newsfeed post');
-    console.log('comment:   post comment on last newsfeed post');
-    console.log('next:      next newsfeed post');
-    console.log('help:      display this message');
-    console.log('quit:      close falafel');
-    console.log('.:         leave command mode');
+    console.log('top:         return to top of newsfeed');
+    console.log('post:        post status update');
+    console.log('like:        like last newsfeed post');
+    console.log('comment:     post comment on last newsfeed post');
+    console.log('next:        next newsfeed post');
+    console.log('poke <name>: Pokes <name>');
+    console.log('help:        display this message');
+    console.log('quit:        close falafel');
+    console.log('.:           leave command mode');
   };
 
   /**
