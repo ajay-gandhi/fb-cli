@@ -3,6 +3,11 @@ Facebook Falafel
 
 Command line utility for Facebook, for the cool kids.
 
+*Note* Facebook rejected our app. Thrice. So it's still not available for everyone to run. You can fork it and use it with your own app token if you wish. Until we find a workaround, that's the only way to use it. /: 
+
+If you know us persoanlly (facebook friends) we'll happly make you a 'beta tester' so you can use it without forking.
+
+
 # Install
 
 Make sure you have node. Then
