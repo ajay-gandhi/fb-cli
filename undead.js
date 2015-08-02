@@ -166,6 +166,44 @@ module.exports = (function () {
     }
 
     /**
+     * Comment on a post in the user's newsfeed
+     *
+     * @param Object post    - The post in the user's newsfeed (object returned
+     *   from nextNews)
+     * @param string comment - The content to post in the comment
+     *
+     * @return [Promise] Resolves when the comment is posted, rejects if an
+     *   error occurred.
+     */
+    Undead.prototype.comment = function(post, comment) {
+      var self    = this,
+          browser = self.browser;
+
+      return new Promise(function (resolve, reject) {
+        // Just click the Like button
+        // Set target to _blank so that new tab opens
+        post.comment.setAttribute('target', '_blank');
+
+        browser
+          .clickLink(post.comment)
+          .then(function () {
+            browser.fill('comment_text', comment);
+            return browser.pressButton('Comment');
+          })
+          .then(function () {
+            // Close the new tab
+            browser.tabs.current = browser.tabs.length - 1;
+            browser.window.close();
+
+            resolve();
+          })
+          .catch(function (e) {
+            reject(e);
+          });
+      });
+    }
+
+    /**
      * Pokes the closest match to the provided pokee by logging in to Facebook
      *   with provided credentials
      *
@@ -259,19 +297,3 @@ var explode = function (element) {
 
   return return_obj;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
