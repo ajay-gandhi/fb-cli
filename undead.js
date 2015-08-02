@@ -17,7 +17,6 @@ module.exports = (function () {
         this.browser      = new Zombie();
         this.home         = 'http://m.facebook.com/';
         this.posts_cache  = [];
-        this.recache      = false;
     }
 
     /**
@@ -68,7 +67,7 @@ module.exports = (function () {
           browser = self.browser;
 
       return new Promise(function (resolve, reject) {
-        // Check if login was successful
+        // Open new tab, then post
         var textareas = browser.queryAll('textarea');
 
         for (var i = 0; i < textareas.length; i++) {
@@ -86,29 +85,6 @@ module.exports = (function () {
             reject(e);
           });
       });
-
-      // Empty message, do nothing
-      if (message === '') return false;
-      self.FB.api(
-        '/me/feed',
-        'POST', {
-          'message': message
-        },
-        function(response) {
-          if (response && response.result && response.result.error) {
-            if (response.result.error.type == 'OAuthException') {
-              console.log('I don\'t have permission to post that' +
-                ' - did you give me permission to post for you?');
-            } else {
-              console.log('Error while posting.');
-              console.error(response.result.error);
-            }
-          } else {
-            // Successful post
-            callback();
-          }
-        }
-      );
     }
 
     /**
@@ -123,8 +99,9 @@ module.exports = (function () {
 
       return new Promise(function (resolve, reject) {
         // See if posts are cached
-        if (self.posts_cache.length == 0 || self.recache) {
-          self.recache = false;
+        if (self.posts_cache.length == 0) {
+          // Ensure original tab
+          browser.tabs.current = 0;
 
           // Click "See More Stories"
           browser
@@ -170,11 +147,16 @@ module.exports = (function () {
 
       return new Promise(function (resolve, reject) {
         // Just click the Like button
-        // Have to recache newsfeed when this happens
+        // Set target to _blank so that new tab opens
+        post.like.setAttribute('target', '_blank');
+
         browser
           .clickLink(post.like)
           .then(function () {
-            self.recache = true;
+            // Close the new tab
+            browser.tabs.current = browser.tabs.length - 1;
+            browser.window.close();
+
             resolve();
           })
           .catch(function (e) {
@@ -197,10 +179,15 @@ module.exports = (function () {
           browser = self.browser;
 
       return new Promise(function (resolve, reject) {
-        // Search for pokee
-        browser.fill('query', pokee);
+        // Search for pokee in new tab
+        browser.open(self.home);
+
         browser
-          .pressButton('Search')
+          .visit(self.home)
+          .then(function () {
+            browser.fill('query', pokee);
+            return browser.pressButton('Search');
+          })
           .then(function () {
 
             // Assume first result is correct
@@ -211,11 +198,14 @@ module.exports = (function () {
             return browser.clickLink(firstResult);
           })
           .then(function () {
-
             // There's a poke link at the bottom
             return browser.clickLink('Poke');
           })
           .then(function () {
+            // Close the new tab here
+            browser.window.close();
+            console.log(browser.tabs.index);
+
             resolve();
           })
           .catch(function (e) {
