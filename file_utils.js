@@ -1,6 +1,6 @@
 'use strict';
 // Module to access local files
-var fs = require('fs-extra'),
+var fs = require('fs-extra-promise'),
     request = require('request');
 
 /**
